@@ -1,0 +1,176 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans 'Workspace' %}
+
+-block navbar
+    ul.nav.navbar-nav.navbar-right
+        li.active
+            a(href="{% url 'mgmt:home' %}") 
+                i.fa.fa-briefcase
+                | {% trans ' Workspace' %}        
+        li.dropdown
+            a(class='dropdown-toggle', data-toggle='dropdown')
+                i.fa.fa-user
+                | {% trans ' User name' %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li
+                    a(href="{% url 'mgmt:settings' %}") 
+                        i.fa.fa-cogs
+                        | {% trans ' Settings' %}
+                li
+                    a(href="{% url 'mgmt:help' %}") 
+                        i.fa.fa-question
+                        | {% trans ' Help' %} 
+                li
+                    a(href="/") 
+                        i.fa.fa-sign-out
+                        | {% trans ' Sign Out' %}                         
+- block content
+    .row
+        h2.harabara
+            i.fa.fa-briefcase
+            | {% trans ' Workspace' %}
+        p.lead {% trans 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.' %}
+    hr.featurette-divider
+    .row
+        .col-md-3(style='padding-right:50px;')
+            .row(align='center')
+                .col-md-9
+                    h3.harabara
+                        i.fa.fa-users
+                        | {% trans ' Teams' %}
+                .col-md-3
+                    h3
+                        a.btn-default(data-toggle='modal', data-target='#add_team_modal')
+                            i.fa.fa-plus(style='color:green;')
+            .row
+                .form-group
+                    {{ form.teams }}
+        .col-md-9
+            .row(align='center')
+                .col-md-11
+                    h3.harabara
+                        i.fa.fa-sitemap
+                        | {% trans ' Projects' %}
+                .col-md-1
+                    h3
+                        a.btn-default(data-toggle='modal', data-target='#add_project_modal')
+                            i.fa.fa-plus(style='color:green;')
+            .row
+                .panel.panel-default
+                    .panel-body.panel-projects(style='height:500px;')
+                        #projects
+
+    .modal.fade(id='add_team_modal', tabindex='-1', role='dialog', aria-labelledby='add_team_modal_label', aria-hidden='true')
+        .modal-dialog
+            .modal-content.col-lg-12
+                .modal-header
+                    .row
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                            i.fa.fa-times
+                        h4.modal-title {% trans 'New team' %}
+                .modal-body
+                    .row
+                        form.form-horizontal(id='add_team', action='', method='post')
+                            .form-group
+                                .col-md-4
+                                    label {% trans 'Name' %}:
+                                .col-md-6
+                                    input.form-control(id='team_name', name='team_name', type='text')
+                            .form-group
+                                .col-md-4
+                                    label {% trans 'Description' %}:
+                                .col-md-6
+                                    textarea.form-control(id='team_description', name='team_description', rows='3', style='resize: none;')
+                            .form-group
+                                .col-md-12(align='center')
+                                    input.btn.btn-success(type='submit', value='{% trans "Add" %}') 
+                                    input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+    input#proj_url(type="hidden", value="{% url 'mgmt:project' 'name' %}")
+
+    .modal.fade(id='add_project_modal', tabindex='-1', role='dialog', aria-labelledby='add_project_modal_label', aria-hidden='true')
+        .modal-dialog
+            .modal-content.col-lg-12
+                .modal-header
+                    .row
+                        button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                            i.fa.fa-times
+                        h4.modal-title {% trans 'New project' %}
+                .modal-body
+                    .row
+                        form.form-horizontal(id='add_project', action='', method='post')
+                            - csrf_token
+                            .form-group
+                                .col-md-4
+                                    label {% trans 'Name' %}:
+                                .col-md-6
+                                    input.form-control(id='project_name', name='project_name', type='text', required)
+                            .form-group
+                                .col-md-4
+                                    label {% trans 'Description' %}:
+                                .col-md-6
+                                    textarea.form-control(id='project_description', name='project_description', rows='3', style='resize: none;', required)
+                            .form-group
+                                .col-md-12(align='center')
+                                    input.btn.btn-success(type='submit', value='{% trans "Add" %}') 
+                                    input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+
+- block js
+    script(type="text/javascript")
+        $( "#add_team").submit(function( event ) {
+            event.preventDefault();
+            var name = $( "#team_name" ).val();
+            var description = $( "#team_description" ).val();
+            if(name!=null && description!=null){
+                var content = $("<option value="+name+">"+name+"</option>");
+                $(content).tooltip();
+                $( "#id_teams" ).append($(content));
+                $('#add_team_modal').modal('toggle');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                $($('#team_name')).val("");
+                $($('#team_description')).val("");
+            }
+        });
+        $( "#add_project").submit(function( event ) {
+            event.preventDefault();
+            var name = $( "#project_name" ).val();
+            var description = $( "#project_description" ).val();
+            if(name!=null && description!=null){
+                var content = $("<a href='{% url 'mgmt:project' "+name+" %}' id="+name+" data-toggle='tooltip' title="+description+" class='btn btn-default' style='margin:10px'><i class='fa fa-fighter-jet fa-4x'></i><p>"+name+"</p></a>");
+                $(content).tooltip();
+                $( "#projects" ).append($(content));
+                $('#add_project_modal').modal('toggle');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                $($('#project_name')).val("");
+                $($('#project_description')).val("");
+            }
+        });
+        $( "#id_teams" ).change(function () {
+            var selected = $( "select option" ).filter(':selected').first();
+            var option_value = $(selected).val();
+            $.ajax({
+                dataType : 'json',
+                url : "{% url 'mgmt:get_projects_team' %}",
+                type : 'GET',
+                data : {'team_id':option_value},
+                success : function(data) {
+                    var projects = data['projects'];
+                    $('#projects').empty();
+                    for(i = 0; i < $(projects).length; i++){
+                        var name = projects[i]['project_name']
+                        var description = projects[i]['project_description']
+                        console.log('name:', name, 'description:', description)
+                        var url = $('#proj_url').val().replace('name',name);
+                        var content = $("<a href='"+url+"' id="+name+" data-toggle='tooltip' title="+description+" class='btn btn-default' style='margin:10px'><i class='fa fa-fighter-jet fa-4x'></i><p>"+projects[i]['project_name']+"</p></a>");                   
+                        $(content).tooltip();
+                        $( "#projects" ).append($(content));
+                    }
+                }
+            });   
+        })
+        .change();

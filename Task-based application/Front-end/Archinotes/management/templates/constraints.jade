@@ -1,0 +1,135 @@
+- extends 'mgmt_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects
+        .panel-body
+            .row
+                .col-md-11
+                    h3.harabara.text-center {% trans "Constraints" %}
+                        a.btn(data-toggle='modal', data-target='#add_constraint_modal')
+                            i.fa.fa-plus.fa-2x
+            .row
+                .col-md-12
+                    .panel.panel-default
+                        .panel-body(style='height:400px;overflow:auto;')
+                            input#id_project_name(name='project_name',type='hidden',value="{{project_name}}")
+                            #table
+                            -if constraints
+                                table.table.table-hover
+                                    thead#thead_kits
+                                        tr
+                                            th {% trans "Type" %} 
+                                            th {% trans "Name" %} 
+                                            th {% trans "Stakeholder" %} 
+                                            th {% trans "Description" %} 
+                                            th {% trans "Alternatives" %}
+                                    tbody#tbody_kits
+                                        -for constraint in constraints
+                                            tr
+                                                -if constraint.constraint == "Business"
+                                                    td {% trans "Business " %}
+                                                        i.fa.fa-money
+                                                -else
+                                                    td {% trans "Technology " %}
+                                                        i.fa.fa-bar-chart-o
+                                                td {{constraint.name}}
+                                                td {{constraint.stakeholder}}
+                                                td {{constraint.description}}
+                                                td {{constraint.alternatives}}
+                            -else
+                                p#warning-message.text-center {% trans "The project don't have constraints. Please add one to start" %}
+
+    .modal.fade(id='add_constraint_modal', tabindex='-1', role='dialog', aria-labelledby='add_constraint_modal_label', aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                        i.fa.fa-times
+                    h3.modal-title.harabara
+                        | {% trans ' Add constraint' %}
+                .modal-body
+                    form.form-horizontal(id='add_constraint', action='', method='post')
+                        - csrf_token
+                        .form-group
+                            .col-md-12
+                                h4.harabara(align='center') {% trans "Name" %}
+                                {{ form.name }}
+                        .form-group
+                            .col-md-12
+                                h4.harabara(align='center') {% trans "Type" %}
+                                {{ form.types }}
+                        .form-group
+                            .col-md-12
+                                h4.harabara(align='center') {% trans "Stakeholder" %}
+                                {{ form.stakeholders }}
+                        .form-group
+                            .col-md-12
+                                h4.harabara(align='center') {% trans "Description" %}
+                                {{form.description}}
+                        .form-group
+                            .col-md-12
+                                h4.harabara(align='center') {% trans "Alternatives" %}
+                                {{form.alternatives}}
+                        .form-group
+                            .col-md-12.text-center.harabara
+                                input.btn.btn-success(type='submit', value='{% trans "Add" %}') 
+                                input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+
+- block js
+    script(type="text/javascript") 
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
+        $( "#add_constraint").submit(function( event ) {
+            event.preventDefault();
+            var name = $('#id_name').val();
+            var stakeholder_type = $('#id_stakeholders').val();
+            var type = $('#id_types').val();
+            var description = $( '#id_description' ).val();
+            var alternatives = $('#id_alternatives').val();
+            var project_name = $('#id_project_name').val();
+            if(name!=null&&name.length>0&&stakeholder_type!=null&&stakeholder_type.length>0&&description!=null&&description.length>0&&alternatives!=null&&alternatives.length>0&&type!=null&&type.length>0){
+                url_value = "{% url 'mgmt:add_constraint' project_name %}";
+                $.ajax({
+                    dataType : 'json',
+                    url : url_value,
+                    type : 'POST',
+                    data : {'name':name,'stakeholder_type':stakeholder_type,'constaint_type':type,'description':description,'alternatives':alternatives},
+                    success : function(data) {
+                        content = '<tr>';
+                        if(type=='business'){
+                            content += '<td>Business <i class="fa fa-money"></i></td>';     
+                        }
+                        else{
+                            content += '<td>Technology <i class="fa fa-bar-chart-o"></i></td>';
+                        }
+                        content += '<td>' + name + '</td>';
+                        content += '<td>' + stakeholder_type + '</td>';
+                        content += '<td>' + description + '</td>';
+                        content += '<td>' + alternatives + '</td>';
+                        content += '<td><a href="/management/'+project_name+'/delete_constraint/'+name+'/"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                        content += '</tr>';
+                        var warning = $('#warning-message').val();
+                        if(warning!=undefined){
+                            table = '<table class="table table-hover">';
+                            table += '<thead id="thead_kits"><tr><th>Type </th><th>Name </th><th>Stakeholder </th><th>Description </th><th>Alternatives</th><th></th></tr></thead>';
+                            table += '<tbody id="tbody_kits">';
+                            table += content;
+                            table += '</tbody>';
+                            table += '</table>';
+                            $('#table').append(table);
+                            $('#warning-message').remove();
+                        }
+                        else{
+                            $('#thead_kits').append(content);
+                        }
+                        $('#add_constraint_modal').modal('toggle');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                    },
+                    error: function (data) {
+                    }
+                });
+            }
+        });

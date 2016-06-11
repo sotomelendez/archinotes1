@@ -1,0 +1,226 @@
+- extends 'mgmt_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects
+        .panel-body
+            form#id_operations_form(action='', method='post')
+                - csrf_token
+                .col-md-2
+                    h3.harabara.text-center {% trans "Operations" %}
+                        a.btn(data-toggle='modal', data-target='#add_operation_modal')
+                            i.fa.fa-plus.fa-2x
+                    {{ form.operational_scenarios }}
+                .col-md-10
+                    .col-md-8
+                        .row
+                            .col-md-6
+                                .panel.panel-default
+                                    .panel-body(style='height:200px; background:#6faddd;')
+                                        h4.harabara {% trans "Stakeholder " %}
+                                            i.fa.fa-users
+                                        {{form.stakeholders}}
+                                        {{form.stakeholder_description}}
+                            .col-md-6
+                                .panel.panel-default
+                                    .panel-body(style='height:200px; background:#bf8bdb;')
+                                        h4.harabara {% trans "Context " %}
+                                            i.fa.fa-cloud
+                                        {{form.context}}
+                                        {{form.context_description}}
+                        .row
+                            .panel.panel-default
+                                .panel-body(style='height:200px; background:#98d481;')
+                                    h4.harabara {% trans "Functionality " %}
+                                        i.fa.fa-cogs
+                                    {{form.functionality}}
+                                    {{form.functionality_description}}
+                    .col-md-4   
+                        .panel.panel-default
+                            .panel-body(style='height:200px; background:#ff3b60;')
+                                h4.harabara {% trans "Inputs " %}
+                                    i.fa.fa-sign-in
+                                .form-inline
+                                    .form-group
+                                        {{form.input_name}}
+                                        a.btn.btn-success(href='javascript:addInput();')
+                                            i.fa.fa-plus
+                                {{form.inputs}}
+                        .panel.panel-default
+                            .panel-body(style='height:200px; background:#febc6a;')
+                                h4.harabara {% trans "Outputs " %}
+                                    i.fa.fa-sign-out
+                                .form-inline
+                                    .form-group
+                                        {{form.output_name}}
+                                        a.btn.btn-success(href='javascript:addOutput();')
+                                            i.fa.fa-plus
+                                {{form.outputs}}    
+                    .col-md-12(align='center')
+                        input.btn.btn-success(type='submit', value='{% trans "Save" %}')
+
+    .modal.fade(id='add_operation_modal', tabindex='-1', role='dialog', aria-labelledby='add_operation_modal_label', aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                        i.fa.fa-times
+                    h3.modal-title.harabara {% trans 'Operational Scenario' %}
+                .modal-body
+                    .form-horizontal
+                        .form-group
+                            .col-md-12
+                                label {% trans 'Name' %}:
+                                {{form.name}}
+                        .form-group
+                            .col-md-12.text-center.harabara
+                                a.btn.btn-success(href='javascript:addOperationalScenario();') {% trans "Add" %}
+                                input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+                
+- block js
+    script(type="text/javascript")
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+            $('#id_operational_scenarios option:first').attr('selected','selected');
+            $('#id_operational_scenarios').trigger('change');
+        });
+        $('#id_operations_form').validate({
+            rules:{
+                stakeholder_description:{
+                    required:true,
+                },
+                context:{
+                    required:true,
+                },
+                context_description:{
+                    required:true,
+                },
+                functionality:{
+                    required:true,
+                },
+                functionality_description:{
+                    required:true,
+                }
+            },
+            showErrors: function (errorMap, errorList) {
+                $.each(this.successList, function (index, value) {
+                    $(value).popover('hide');
+                    $(value).closest('.control-group').removeClass('error').addClass('success');
+                });
+                return $.each(errorList, function (index, value) {
+                    var _popover = $(value.element).popover({
+                        trigger: 'manual',
+                        placement: 'top',
+                        content: value.message,
+                        template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                    });
+                    _popover.data('bs.popover').options.content = value.message;
+                    $(value.element).popover('show');
+                    $(value.element).closest('.control-group').removeClass('success').addClass('error');
+                });
+            }
+        });
+        $('#id_operations_form').submit(function(event) { 
+            $('#id_inputs option').prop('selected', true);
+            $('#id_outputs option').prop('selected', true);
+        });
+        function addInput(){
+            var input_name = $('#id_input_name').val();
+            var inputs = $('#id_inputs').find('option').map(function() {return this.value;});
+            var temp = true;
+            if(input_name!=null&&input_name.length>0){
+                for(i=0;i<inputs.length;i++){
+                    if(input_name==inputs[i]){
+                        temp = false;
+                    }
+                }
+            }
+            if(temp){
+                var value = input_name.replace(/ /g,"_")
+                var content = $("<option value="+value+">"+input_name+"</option>");                   
+                $('#id_inputs').append($(content));
+                $('#id_input_name').val('');
+            }
+        };
+        function addOutput(){
+            var input_name = $('#id_output_name').val();
+            var inputs = $('#id_outputs').find('option').map(function() {return this.value;});
+            var temp = true;
+            if(input_name!=null&&input_name.length>0){
+                for(i=0;i<inputs.length;i++){
+                    if(input_name==inputs[i]){
+                        temp = false;
+                    }
+                }
+            }
+            if(temp){
+                var value = input_name.replace(/ /g,"_")
+                var content = $("<option value="+value+">"+input_name+"</option>");                   
+                $('#id_outputs').append($(content));
+                $('#id_output_name').val('');
+            }
+        };
+        function addOperationalScenario(){
+            var name = $('#id_name').val();
+            if(name==null||name.length==0){
+                $('#id_name').attr('placeholder', 'Name can´t be blank');
+            }
+            else if(name!=null&&name.length>0){
+                var value = name.replace(/ /g,"_")
+                var content = $("<option value="+value+">"+name+"</option>");                   
+                $('#id_operational_scenarios').append($(content));
+                $('#id_operational_scenarios option[value="' + value + '"]').prop('selected', true);
+                $('#id_name').attr('placeholder', '');
+                $('#id_name').val('');
+                
+                $('#id_stakeholder_description').val('');
+                $('#id_context').val('');
+                $('#id_context_description').val('');
+                $('#id_inputs').empty();
+                $('#id_outputs').empty();
+                $('#id_functionality').val('');
+                $('#id_functionality_description').val('');
+                $('#add_operation_modal').modal('toggle');
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            }
+        };
+        $('#id_operational_scenarios').change(function () {
+            var name = $('#id_operational_scenarios').val();
+            var url_value = "{% url 'mgmt:get_operational_scenario' project_name %}";
+            if(name!=null&&name.length>0){
+                $.ajax({
+                    dataType : 'json',
+                    url : url_value,
+                    type : 'GET',
+                    data : {'name':name},
+                    success : function(data) {
+                        var response = data['response']
+                        if(response!=null){
+                            $("#id_stakeholders option").filter(function() {
+                                return $(this).text() == response['stakeholder']; 
+                            }).prop('selected', true);
+                            $('#id_stakeholder_description').val(response['stakeholder_description']);
+                            $('#id_context').val(response['context']);
+                            $('#id_context_description').val(response['context_description']);
+                            $('#id_inputs').empty();
+                            $('#id_outputs').empty();
+                            for(i=0;i<response['inputs'].length;i++){
+                                var value = response['inputs'][i].replace(/ /g,"_")
+                                var content = $("<option value="+value+">"+response['inputs'][i]+"</option>");                   
+                                $('#id_inputs').append($(content));
+                            }
+                            $('#id_functionality').val(response['functionality']);
+                            $('#id_functionality_description').val(response['functionality_description']);
+                            for(i=0;i<response['outputs'].length;i++){
+                                var value = response['outputs'][i].replace(/ /g,"_")
+                                var content = $("<option value="+value+">"+response['outputs'][i]+"</option>");                   
+                                $('#id_outputs').append($(content));
+                            }
+                        }
+                    },
+                    error: function (data) {
+                    }
+                });
+            }
+        });

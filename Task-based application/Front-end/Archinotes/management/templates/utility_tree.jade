@@ -1,0 +1,175 @@
+- extends 'mgmt_base.jade'
+- load i18n
+
+- block css
+    link(rel='stylesheet', href='/static/org-chart/css/jquery.orgchart.css')
+
+- block project_content   
+    #stakeholders_panel.panel.panel-default.panel-projects
+        .panel-body(style='height:500px;')
+            .row
+                h3.harabara.text-center {% trans "Utility Tree" %}
+                    -if not utility_tree
+                        a.btn(data-toggle='modal', data-target='#add_utility_tree_modal')
+                            i.fa.fa-plus.fa-2x
+            .row
+                -if utility_tree
+                    ul#tree.hide
+                        li#utility_tree {% trans "Utility Tree" %}
+                            ul
+                                -for utility in utility_tree
+                                    li(id='{{utility.name}}') {{utility.name}}
+                                        ul
+                                            -for node in utility.nodes
+                                                li(id='{{node.node}}') {{node.node}}
+                                                    ul
+                                                        li(id='{{node.score}}') {{node.score}}
+                -else
+                    p#warning-message.text-center {% trans "The project don't have Utility Tree. Please add one to start" %}
+
+                #chart-container
+                ul#source.hide
+                    li#utility_tree Utility Tree
+                        ul
+                            li#performance Performance
+                                ul
+                                    li#data_latency Data Latency
+                                        ul
+                                            li (M,L)
+                                    li#transaction_throughput Transaction Throughput
+                                        ul
+                                            li (H,L)
+                            li#modifiability Modifiability
+                                ul
+                                    li#new_product_categories New product categories
+                                        ul
+                                            li (M,M)
+                                    li#change_COTS Change COTS
+                                        ul
+                                            li (L,L)
+                            li#availability Availability
+                                ul
+                                    li#HW_failure H/W Failure
+                                        ul
+                                            li (M,H)
+                                    li#COTS_SW_failures COTS S/W Failures
+                                        ul
+                                            li (M,L)
+                            li#security Security
+                                ul
+                                    li#data_confident Data Confident
+                                        ul
+                                            li (L,L)
+                                    li#data_integrity Data Integrity
+                                        ul
+                                            li (M,L)
+                                                                                                       
+
+    .modal.fade#add_utility_tree_modal(tabindex='-1', role='dialog', aria-labelledby='add_utility_tree_modal_label', aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                        i.fa.fa-times
+                    h3.modal-title.harabara {% trans 'Utility tree' %}
+                .modal-body
+                    .form-horizontal
+                        .form-group
+                            .col-md-12
+                                label {% trans 'Type' %}:
+                                {{form.utility_tree_type}}
+                        .form-group
+                            .col-md-12.text-center.harabara
+                                a.btn.btn-success(href='javascript:addUtilityTree();') {% trans "Add" %}
+                                input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+
+    #modify_utility_tree
+
+- block js
+    script(type='text/javascript', src='/static/org-chart/js/jquery.orgchart.min.js')
+    script(type="text/javascript")
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+            $('#tree').orgChart({container: $('#chart-container'),nodeClicked: onChartNodeClicked,});
+        });
+        function addUtilityTree(){
+            var type =  $('#id_utility_tree_type').val();
+            $('#warning-message').remove();
+            $('#chart-container').empty();
+            $('#source').orgChart({
+                container: $('#chart-container'),
+                nodeClicked: onChartNodeClicked,
+            });
+            $('#add_utility_tree_modal').modal('toggle');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+        function addUtilityTreeNode(){
+            var old_name =  $('#id_old_name').val();
+            var name =  $('#id_name').val();
+            var element = $('#'+old_name);
+            console.log('old_name',old_name) 
+            console.log('name',name)
+            console.log('element',element)
+            var modal = '<li id="trLLueU">trLLueU<ul><li id="M H">M H</li></ul></li>';
+            //modal += '';
+            element.append(modal);
+            $('#tree').orgChart({container: $('#chart-container'),nodeClicked: onChartNodeClicked,});
+            $('#modify_utility_tree_modal').modal('toggle');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+        function modifyUtilityTreeNode(){
+            var old_name =  $('#id_old_name').val();
+            var name =  $('#id_name').val();
+            console.log('old_name',old_name)
+            console.log('name',name)
+            var element = $('#'+old_name+'')
+            console.log('element',element)
+            $('#modify_utility_tree_modal').modal('toggle');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+        function deleteUtilityTreeNode(){
+            var name = $('#id_old_name').val();
+            var element = $('#'+name);
+            element.remove();
+            $('#tree').orgChart({container: $('#chart-container'),nodeClicked: onChartNodeClicked,});
+            $('#modify_utility_tree_modal').modal('toggle');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+        function onChartNodeClicked(node) {
+            var modal = '<div class="modal fade" id="modify_utility_tree_modal" tabindex="-1" role="dialog" aria-labelledby="modify_utility_tree_modal_Label" aria-hidden="true">';
+            modal += '<div class="modal-dialog">';
+            modal += '<div class="modal-content">';
+            modal += '<div class="modal-header">';
+            modal += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+            modal += '<h4 class="modal-title">Modify quality attribute</h4>';
+            modal += '</div>';
+            modal += '<div class="modal-body">';
+            modal += '<div class="form-horizontal">';
+            modal += '<div class="form-group">';
+            modal += '<div class="col-md-12">';
+            modal += '<label>Name:</label>';
+            modal += '<input class="form-control" type="hidden" name="old_name" id="id_old_name" value="'+node.attr('id')+'"></input>';
+            modal += '<input class="form-control" type="text" name="name" id="id_name" placeholder="'+node.attr('id')+'"></input>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '<div class="form-group">';
+            modal += '<div class="col-md-12 text-center harabara">';
+            modal += '<a class="btn btn-success" href="javascript:addUtilityTreeNode();">Add</a>';
+            modal += '<a class="btn btn-primary" href="javascript:modifyUtilityTreeNode();">Modify</a>';
+            modal += '<a class="btn btn-danger" href="javascript:deleteUtilityTreeNode();">Delete</a>';
+            modal += '<input type="reset" class="btn btn-warning" data-dismiss="modal" value="Cancel"></input>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '</div>';
+            modal += '</div>';
+            $('#modify_utility_tree').empty();
+            $('#modify_utility_tree').append(modal);
+            $('#modify_utility_tree_modal').modal('show');
+        }

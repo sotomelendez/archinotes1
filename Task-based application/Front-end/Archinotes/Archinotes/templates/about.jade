@@ -1,0 +1,73 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "About" %}
+
+-block navbar
+    .row
+        ul.nav.navbar-nav
+            li
+                a(href='/') {% trans "Home" %}             
+            li.active
+                a(href="{% url 'about' %}") {% trans "About" %}  
+        form.navbar-form.navbar-right(id='id_sign_in_form', action="{% url 'sign_in' %}", method='post')
+            -csrf_token
+            .form-inline
+                {{ sign_in_form.email }}
+                {{ sign_in_form.password }}
+                input.btn.btn-primary(type='submit', value='{% trans "Sign In" %}')
+
+-block content
+    .row(align='center')
+        .col-md-8.col-md-offset-2
+            h1.harabara {% trans "Context" %}            
+            img.img-responsive.featurette-image(src='/static/archinotes/img/about_context.png')
+            p.lead  {% trans "In Software Architecture Design, many architects are needed and their actions and design must be coherent and coordinated between them. However, it is usual that architecture teams and their members are located in different cities or even countries. Due to this, architects must forcefully adjust their calendars to schedule face-to-face or virtual meetings where they can define the architecture." %}            
+    hr.featurette-divider
+    .row(align='center')
+        .col-md-8.col-md-offset-2
+            h1.harabara {% trans "Purpose" %}
+            img.featurette-image.img-responsive(src='/static/archinotes/img/about_platform.png')
+            p.lead {% trans "Archinotes seeks to introduce the user to a user-friendly environment that's easy to use. Particularly we consider important for architects and students to feel comfortable with the tools they are required to use instead of confused by complex interfaces that are difficult to understand." %}
+    hr.featurette-divider
+    .row(align='center')
+        .col-md-8.col-md-offset-2
+            h1.harabara {% trans "Project" %}
+            img.featurette-image.img-responsive(src='/static/archinotes/img/about_project.png')            
+            p.lead {% trans "Archinotes project began in 2011 at Universidad de los Andes by the hand of the professor Darío Correal. The first Alpha application was developed in Android by the bachelor students Camilo Rodriguez and Juan Sebastián Urrego, and the Web Based application by the bachelor students Andrés Arenas, Ernesto Soto and Alejandro Casas. These applications belonged to their undergraduate theses and they were the first iteration and the begin of Archinotes." %}
+
+- block js
+    script(type="text/javascript") 
+        $(document).ready(function(){
+            var login_form = $('#id_sign_in_form');
+            if(login_form != undefined) {
+                $(login_form).validate({
+                    rules:{
+                        email:{
+                            required:true,
+                        },
+                        password:{
+                            required:true,
+                        }
+                    },
+                    showErrors: function (errorMap, errorList) {
+                        $.each(this.successList, function (index, value) {
+                            $(value).popover('hide');
+                            $(value).closest('.control-group').removeClass('error').addClass('success');
+                        });
+                        return $.each(errorList, function (index, value) {
+                            var _popover = $(value.element).popover({
+                                trigger: 'manual',
+                                placement: 'bottom',
+                                content: value.message,
+                                template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                            });
+                            _popover.data('bs.popover').options.content = value.message;
+                            $(value.element).popover('show');
+                            $(value.element).closest('.control-group').removeClass('success').addClass('error');
+                        });
+                    }
+                });
+            }
+        });

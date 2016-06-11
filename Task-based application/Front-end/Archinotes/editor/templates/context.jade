@@ -1,0 +1,92 @@
+- extends 'editor_base.jade'
+- load i18n
+
+    link(rel='stylesheet', href='/static/toolbar/css/toolbar.css', type='text/css')
+
+- block project_content
+    .panel.panel-default.panel-projects(style='height:500px;')
+        .panel-body
+            div#diagrams
+                a(href="javascript:showDiv('timelinediv');",id='dF1',class='btn btn-default',style='margin:10px')
+                    i.fa.fa-sitemap.fa-2x
+                    p Con1
+                a(data-toggle='modal', data-target='#new_meeting_modal', id='newDiag',class='btn btn-default',style='margin:10px')
+                    i.fa.fa-plus-square.fa-2x
+                    p New
+                br
+            div(id='timelinediv',style='visibility:hidden;')
+                .demo-box-wrap
+                    .demo-box
+                        #my-timeline
+                            .timeline-html-wrap(style='display: none;')
+                                .timeline-event
+                                    .timeline-date 02.02.2014
+                                    .timeline-title Version 1
+                                    .timeline-thumb /static/archinotes/img/dDepl1.png
+                                    .timeline-content
+                                        a(href="javascript:changeDivImage('diagramImage','/static/archinotes/img/dDepl1.png')") View
+                                        p Architect: Ernesto Soto
+                                        p Depth: 1
+                                        p Components: 3
+                                        p Connectors: 2
+                                        a(href="#")
+                                            i.fa.fa-download
+                                            {% trans " Download" %}
+                                        a(href="{% url 'editor:canvas' project_name %}")
+                                            i.fa.fa-plus
+                                            {% trans " Edit" %}
+                                        a(href="#")
+                                            i.fa.fa-comments
+                                            {% trans " View annotations" %}
+
+            div#diagramImage(align='center',style='margin-top:15px;')
+    .modal.fade(id='new_meeting_modal', tabindex='-1', role='dialog', aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                        i.fa.fa-times
+                    h3.modal-title.harabara
+                        i.fa.fa-users
+                        | {% trans ' New Diagram' %}
+                .modal-body
+                    form.form-horizontal(id='new_diagram', action="{% url 'editor:canvas' project_name %}", method='post')
+                        - csrf_token
+                        .form-group
+                            .col-md-12
+                                label {% trans 'Name' %}:
+                                input.form-control(id='name', type='text', name='name')
+                        .form-group
+                            .col-md-12
+                                label {% trans 'Time' %}:
+                                select.form-control(id='type', name='type')
+                                    option(value='1min') {% trans "1:00 min" %}
+                                    option(value='2min') {% trans "2:00 min" %}
+                                    option(value='3min') {% trans "3:00 min" %}
+                                    option(value='4min') {% trans "4:00 min" %}
+                                    option(value='5min') {% trans "5:00 min" %}
+                                    option(value='6min') {% trans "6:00 min" %}
+                                    option(value='7min') {% trans "7:00 min" %}
+                                    option(value='8min') {% trans "8:00 min" %}
+                                    option(value='9min') {% trans "9:00 min" %}
+                                    option(value='10min') {% trans "10:00 min" %}
+                        .form-group
+                            .col-md-12(align='center')
+                                input.btn.btn-success(type='submit', value='{% trans "New Meeting" %}')
+                                input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+
+    link(rel='stylesheet', href='/static/timeline/css/timelinexml.basic.css', type='text/css')
+- block js
+    script(type="text/javascript")
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
+        function changeDivImage(divId,cont){
+            document.getElementById(divId).innerHTML = "<img src="+cont+" width='350' height='350'/>";
+        }
+        function showDiv(divId){
+            document.getElementById(divId).style.visibility='visible';
+        }
+    script(type='text/javascript', src='/static/timeline/js/timelinexml.min.js')
+    script(type='text/javascript', src="/static/jquery-ui/js/jquery-ui-1.10.4.custom.min.js")
+    script(type='text/javascript', src='/static/toolbar/js/toolbar.js')

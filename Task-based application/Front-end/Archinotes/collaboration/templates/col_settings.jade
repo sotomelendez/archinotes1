@@ -1,0 +1,37 @@
+- extends 'col_base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "Collaboration Settings" %}
+
+
+   
+- block content            
+
+    p#pf(style='display:none')
+      {{annotation_string}}
+      
+    .row
+        h2
+            i.fa.fa-cogs
+            | {% trans ' Collaboration Settings' %}
+        p.lead {% trans 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.' %}
+    hr.featurette-divider
+    .row
+        #annotations_panel.panel.panel-default.panel-projects
+        .panel-body(style='height:500px;')
+            .row
+                h3.harabara.text-center {% trans "Annotations " %}
+                  a.btn(href="{% url 'col:create_annotation' %}")
+                          i.fa.fa-plus.fa-2x
+            .row
+              #annotationss
+                {% for item in annotation_types %} 
+                a.btn.btn-default.circle.drag(style="margin-left:20px; width:200px; margin-bottom:10px", href="?q={{item.name}}")
+                 i.fa.fa-truck.fa-4x
+                 p {{ item.name|slice:":20" }}
+                {% endfor %}
+                
+                
+
+        

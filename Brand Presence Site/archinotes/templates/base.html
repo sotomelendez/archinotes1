@@ -1,0 +1,66 @@
+{% load cms_tags sekizai_tags %}
+{% load staticfiles %}
+<html>
+<!-- Header -->
+<head>
+  <link href="{% static 'img/logo_32.png' %}" type="image/x-icon" rel="shortcut icon" />
+  <title>{{ request.current_page.get_title }}</title>
+  <style>
+  body 
+  {
+   padding-top:52px;
+ }
+ </style>
+ <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
+ <link type="text/css" rel="stylesheet" href="{% static 'css/application.css' %}" >
+ {% render_block "css" %}
+</head>
+
+<!-- Body -->
+<body data-spy="scroll" data-target="#sidebar" data-twtter-rendered="true" style="height: 100%">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+       <div class="container">
+        <a class="brand" href="/"><img src="{% static 'img/brand.png' %}"/></a>
+        <ul id="menu" class="nav">
+          <li id="home"><a class="harabara" href="/">Home</a></li>
+          <li id="context"><a class="harabara" href="/context">Context</a></li>
+          <li id="platform"><a class="harabara" href="/platform">The Platform</a></li>
+          <li id="project"><a class="harabara" href="/project">The Project</a></li>
+          <li id="downloads"><a class="harabara" href="/downloads">Downloads</a></li>
+          <li id="about"><a class="harabara" href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main container -->
+  <div class="container" style="padding-bottom:20px" >
+    {% cms_toolbar %}
+    {% placeholder base_content %}
+    {% block base_content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer well">
+    <center>
+      <div class="container">
+
+        <span class="pull-left">Designed and built by <a href="http://moosas.uniandes.edu.co">MooSas Group</a></span>
+        <span><img src="{% static 'img/gray_icon.png' %}"/></li>
+          <span class="pull-right">Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a> </span>
+        </div>
+        <br>
+        <p>© 2013 Archinotes. All rights reserved.</p>
+      </center>
+    </footer>
+    <script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootscripts.js' %}"> </script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    {% render_block "js" %}
+  </body>
+
+  </html>

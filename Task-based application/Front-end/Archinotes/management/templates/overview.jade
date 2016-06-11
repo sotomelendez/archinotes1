@@ -1,0 +1,61 @@
+- extends 'mgmt_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects
+        .panel-body
+            .row
+                h3.harabara.text-center {% trans "Project Overview" %}
+            form(id='id_overview_form', action='', method='post')
+                -csrf_token
+                .row
+                    input(id='id_project_name',name='project_name',type='hidden',value="{{project_name}}")
+                    .col-md-6
+                        h4.harabara.text-center {% trans "Project background" %}
+                        {{ form.background }}
+                    .col-md-6
+                        h4.harabara.text-center {% trans "Purpose and scope" %}
+                        {{ form.purpose_scope }}
+                .row
+                    .col-md-12
+                        h4.harabara.text-center {% trans "System overview" %}
+                        {{ form.overview }}
+                .row
+                    .col-md-12.text-center(style='margin:10px')
+                        input.btn.btn-success(type='submit', value='{% trans "Save" %}')
+
+- block js
+    script(type="text/javascript")
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
+        $('#id_overview_form').validate({
+            rules:{
+                background:{
+                    required:true,
+                },
+                purpose_scope:{
+                    required:true,
+                },
+                overview:{
+                    required:true,
+                }
+            },
+            showErrors: function (errorMap, errorList) {
+                $.each(this.successList, function (index, value) {
+                    $(value).popover('hide');
+                    $(value).closest('.control-group').removeClass('error').addClass('success');
+                });
+                return $.each(errorList, function (index, value) {
+                    var _popover = $(value.element).popover({
+                        trigger: 'manual',
+                        placement: 'top',
+                        content: value.message,
+                        template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                    });
+                    _popover.data('bs.popover').options.content = value.message;
+                    $(value.element).popover('show');
+                    $(value.element).closest('.control-group').removeClass('success').addClass('error');
+                });
+            }
+        });

@@ -1,0 +1,98 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "Settings" %}
+
+-block navbar
+    ul.nav.navbar-nav.navbar-right
+        li
+            a(href="{% url 'mgmt:home' %}") 
+                i.fa.fa-briefcase
+                | {% trans " Workspace" %}
+        li.dropdown
+            a(class='dropdown-toggle', data-toggle='dropdown')
+                i.fa.fa-user
+                | {% trans " User name" %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li.active
+                    a(href="{% url 'mgmt:settings' %}") 
+                        i.fa.fa-cogs
+                        | {% trans " Settings" %}
+                li
+                    a(href="{% url 'mgmt:help' %}") 
+                        i.fa.fa-question
+                        | {% trans " Help" %} 
+                li
+                    a(href="/") 
+                        i.fa.fa-sign-out
+                        | {% trans " Sign Out" %}    
+- block content
+    .row
+        h2
+            i.fa.fa-cogs
+            | {% trans ' Settings' %}
+        p.lead {% trans 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.' %}
+    hr.featurette-divider
+    .row
+        .col-md-6
+            form.form-horizontal
+                .form-group
+                    .col-md-4
+                        label {% trans 'Name' %}:
+                    .col-md-6
+                        input.form-control(type='text', name='name')
+                .form-group
+                    .col-md-4
+                        label {% trans 'Email' %}:
+                    .col-md-6
+                        input.form-control(type='text', name='email')
+                .form-group
+                    .col-md-4
+                        label {% trans 'Current password' %}:
+                    .col-md-6
+                        input.form-control(type='text', name='current_password')
+                .form-group
+                    .col-md-4
+                        label {% trans 'New password' %}:
+                    .col-md-6
+                        input.form-control(type='text', name='new_password')                   
+                .form-group
+                    .col-md-4
+                        label {% trans 'Confirm password' %}:
+                    .col-md-6
+                        input.form-control(type='text', name='confirm_new_password')  
+                .form-group
+                    .col-md-4
+                        label {% trans 'Language' %}:
+                    .col-md-6
+                        select.form-control(id='languages', name='languages')
+                            option(id='English', selected) {% trans 'English' %}
+                            option(id='Spanish') {% trans 'Spanish' %}
+                            option(id='French') {% trans 'French' %}
+                .form-group
+                    .col-md-4
+                        label {% trans "Time zone" %}:
+                    .col-md-6
+                        select.form-control(id='time_zone', name='time_zone')
+                            option(id='1', selected) (GMT-5:00) America/Bogota
+                            option(id='2') (GMT-5:00) Europe/Dublin
+                            option(id='3') (GMT-5:00) Africa/Monrovia
+                .form-group
+                    .col-md-4
+                        label {% trans 'Connect to' %} Facebook:
+                    .col-md-6
+                        i.fa.fa-facebook-square
+                        | {% trans ' Not connected' %}
+                .form-group
+                    .col-md-4
+                        label {% trans 'Connect to' %} Twitter:
+                    .col-md-6
+                        i.fa.fa-twitter-square
+                        | {% trans ' Not connected' %}
+                .form-group
+                    .col-md-12(align='center')
+                        input.btn.btn-success(type='submit', value='{% trans "Save changes" %}')                                                             
+        .col-md-6
+            img.img-responsive(src='/static/archinotes/img/settings.png')

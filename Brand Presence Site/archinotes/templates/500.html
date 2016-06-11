@@ -1,0 +1,192 @@
+{% load cms_tags sekizai_tags %}
+{% load staticfiles %}
+<html>
+
+<!-- Header -->
+<head>
+  <title>
+    Server error - 500
+  </title>
+  <link href="{% static 'img/logo_32.png' %}" type="image/x-icon" rel="shortcut icon"/>
+  <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
+  <script type="text/javascript" src="{% static 'js/plax.js' %}"></script>
+  <link type="text/css" rel="stylesheet" href="{% static 'css/application.css' %}"/>
+
+  <!--CSS Paralax -->
+  <style type="text/css">
+
+  div#parallax_wrapper 
+  {  
+    position: relative;
+    z-index:0;
+    width: 1280px;
+  }      
+  div#parallax_field 
+  {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 450px;
+    width: 100%;
+    overflow: hidden;
+  }
+  #parallax_field #heaven
+  {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 450px;
+    z-index: 1;
+  }
+  #parallax_field #road 
+  {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 3;
+  }
+  #parallax_illustration 
+  {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 450px;
+    position: relative;
+    clear: both;
+    overflow: hidden;
+  }
+  #parallax_illustration img 
+  {
+    position: absolute;
+  }
+  #parallax_illustration #clouds 
+  {
+    z-index: 2;
+    width:180%;
+    top: 0px;
+    left: 0px;
+  }
+  #parallax_illustration #metal 
+  {
+    z-index: 5;
+    top: 65px;
+    left: 638px;
+  }
+  #parallax_illustration #lion 
+  {
+    top: 102px;
+    left: 500px;
+    z-index: 4;
+  }
+  #parallax_illustration #scarecrow 
+  {
+    top: 45px;
+    left: 864px;
+    z-index: 3;
+  }
+  #parallax_illustration #message 
+  {
+    top: 20px;
+    left: 40px;
+    z-index: 5;
+  }
+  </style>
+
+  <!-- Parallax Javascript -->
+  <script type="text/javascript">
+  $(document).ready(function () 
+  {
+
+    //Sets the maximum resolution to the wrapper
+    $("#parallax_wrapper").attr('style',"width:"+(screen.width)+"px");
+
+    //Set and enable parallax 
+    $.plax.enable()
+    $('#clouds').plaxify({"xRange":10,"yRange":0})
+    $('#metal').plaxify({"xRange":100,"yRange":20})
+    $('#lion').plaxify({"xRange":100,"yRange":30,"invert":true})
+    $('#scarecrow').plaxify({"xRange":100,"yRange":30,"invert":true})
+    $('#message').plaxify({"xRange":10,"yRange":10,"invert":true})
+  })
+  </script>
+</head>
+
+<!-- Body -->
+<body>
+
+  <!--Background wrapper -->
+  <div id="parallax_wrapper">
+    <div id="parallax_field">
+      <img src="{% static 'img/heaven.png' %}" data-xrange="0" data-yrange="20" height="450" id="heaven"/>
+      <img src="{% static 'img/road.png' %}"  data-xrange="0" data-yrange="20" height="450" id="road"/>
+    </div>
+
+    <!-- Illustration's container -->
+    <div id="parallax_illustration">
+      <img src="{% static 'img/clouds.png' %}" height="450" id="clouds"/>
+      <img src="{% static 'img/metal.png' %}" width="260px" id="metal"/>
+      <img src="{% static 'img/lion.png' %}" width="240px" id="lion"/>
+      <img src="{% static 'img/scarecrow.png' %}" width="240px" id="scarecrow"/>
+      <img src="{% static 'img/message500.png' %}" id="message"/>
+    </div>
+  </div>
+
+  <!-- Footer container -->
+  <div class="container" style="overflow: hidden">
+    <footer class="footer" >
+      <br>
+      <div class="container-fluid">
+
+        <!-- Defines two rows -->
+        <div class="row-fluid">
+
+          <!-- Image and label tool -->
+          <div class="span3">
+            <center>
+              <img src="{% static 'img/tools.png' %}"/>
+              <h3 class="harabara" style="color:#CCCCCC"> Report the bug</h3> 
+            </center>
+          </div>
+          
+          <!-- Form container -->
+          <div class="span9" class="container">
+            <div class="container">
+              <form class="form-horizontal">
+                <div class="control-group">
+                  <label class="control-label" for="inputName">Name</label>
+                  <div class="controls">
+                    <input type="text" class="input-xlarge" id="inputName">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="inputEmail">Email</label>
+                  <div class="controls">
+                    <input type="text" class="input-xlarge" id="inputEmail">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="description">Describe your problem</label>
+                  <div class="controls">
+                    <textarea id="description" style="resize:none" class="input-xlarge" rows="4"></textarea>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="controls">
+                    <button type="submit" class="btn">Submmit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </footer>
+  </div>
+</body>
+
+</html>

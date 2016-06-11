@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+{% load staticfiles %}
+{% block base_content %}
+
+<section id="title">
+	{% placeholder title %}
+</section>
+
+<section id="sectionBanner">
+	{% placeholder Banner %}
+</section>
+<br/>
+<div align="justify">
+<section id="section0">
+	{% placeholder overview %}
+</section>
+</div>
+
+<br/>
+
+<!-- Two rows container -->
+<div class="row-fluid">
+
+	<!-- Sidebar -->
+	<div class="span4">
+		<div class="bs-docs-sidebar well well-small" style="width:270px;" id="sidebar">
+			{% placeholder sidebar %}
+		</div>
+	</div>
+
+	<!-- Content -->
+	<div align="justify" class="span8" id="content">
+
+		<!-- Sections -->
+		<section id="section1">
+			{% placeholder section1%}
+		</section>
+		<section id="section2">
+			{% placeholder section2%}
+		</section>
+		<section id="section3">
+			{% placeholder section3%}
+		</section>
+		<section id="section4">
+			{% placeholder section4%}
+		</section>
+	</div>
+
+</div>
+{% endblock %}

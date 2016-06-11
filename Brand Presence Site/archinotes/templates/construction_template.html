@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+{% load staticfiles %}
+{% block base_content %}
+<!-- Parallax Javascript -->
+ <!--CSS Paralax -->
+  <style type="text/css">
+
+  div#parallax_wrapper 
+  {  
+    position: relative;
+    z-index:0;
+    margin-left:auto;
+    margin-right:auto;
+    width: 1280px;
+  }      
+   div#parallax_field 
+  {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 450px;
+    width: 100%;
+  }
+  #parallax_illustration 
+  {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    clear: both;
+  }
+  #parallax_illustration img 
+  {
+    position: absolute;
+  }
+  #parallax_illustration #worker
+  {
+    z-index: 3;
+    top: 40px;
+    left: 300px;
+  }
+  #parallax_illustration #cone1 
+  {
+    z-index: 2;
+    top: 40px;
+    left: 100px;
+  }
+    #parallax_illustration #cone2 
+  {
+    z-index: 2;
+    top: 40px;
+    left: 750px;
+  }
+      #parallax_illustration #under 
+  {
+    z-index: 4;
+    top: 305px;
+    left: 265px;
+  }
+  </style>
+
+  <script type="text/javascript">
+  $(document).ready(function () 
+  {
+    //Set and enable parallax 
+    $.plax.enable()
+    $('#worker').plaxify({"xRange":100,"yRange":20})
+    $('#cone').plaxify({"xRange":100,"yRange":30,"invert":true})
+  })
+  </script>
+   <!--Background wrapper -->
+  <div id="parallax_wrapper">
+    <div id="parallax_field">
+    </div>
+
+    <!-- Illustration's container -->
+    <div id="parallax_illustration"> 
+    	<img src="{% static 'img/worker.png' %}" width="400px" id="worker"/>
+      <img src="{% static 'img/cone.png' %}" width="150px" id="cone1"/>
+      <img src="{% static 'img/cone.png' %}" width="150px" id="cone2"/>
+      <img src="{% static 'img/under_construction.png' %}" width="400px" id="under"/>
+    </div>
+  </div>
+  <div align="center">
+      <h1 class="harabara">Under Construction</h1>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+{% load staticfiles %}
+{% block base_content %}
+
+<!-- Carousel -->
+<div class="container-fluid">
+	<div id="myCarousel" class="carousel slide">
+		<!-- Carousel items -->
+		<div class="carousel-inner">
+
+			<!-- Carousel items -->
+			<div class="item active"><img src="{% static 'img/archinotes_carousel1.png' %}" /> </div>
+			<div class="item"><img src="{% static 'img/archinotes_carousel2.png' %}"/>
+			</div>
+			<div class="item"><img src="{% static 'img/archinotes_carousel3.png' %}"/>
+			</div>
+
+		</div>
+
+		<!-- Carousel nav -->
+		<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+		<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+
+	</div>
+</div>
+
+<!-- Sidebar and content container -->
+<div class="container-fluid">
+	
+	<!-- Two rows container -->
+	<div class="row-fluid">
+
+		<!-- Sidebar -->
+		<div class="span4">
+			<div class="bs-docs-sidebar well well-small" style="width:270px;" id="sidebar">
+				{% placeholder sidebar %}
+			</div>
+		</div>
+		
+		<!-- Content -->
+		<div align="justify" class="span8" id="content">
+			
+			<!-- Sections -->
+			<section id="section0">
+				{% placeholder overview %}
+			</section>
+			<section id="section1">
+				{% placeholder section1%}
+			</section>
+			<section id="section2">
+				{% placeholder section2%}
+			</section>
+			<section id="section3">
+				{% placeholder section3%}
+			</section>
+			<section id="section4">
+				{% placeholder section4%}
+			</section>
+		</div>
+
+	</div>
+</div>
+
+{% endblock %}

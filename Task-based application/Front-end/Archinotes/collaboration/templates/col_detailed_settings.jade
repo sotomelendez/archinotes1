@@ -1,0 +1,112 @@
+- extends 'col_base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "Collaboration Settings" %}
+
+
+   
+- block content            
+
+    p#pf(style='display:none')
+      {{annotation_string}}
+      
+    .row
+        h2
+            i.fa.fa-cogs
+            | {% trans ' Collaboration Settings' %}
+        p.lead {% trans 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.' %}
+    hr.featurette-divider
+    .row
+        .col-md-6
+            a.btn.btn-default(style='height: 40px', href="?") Back
+            a.btn.btn-success(style='width: 250px; height: 40px; margin-left: 20px', href="{% url 'col:create_annotation' %}") Create New Annotation Type
+            br
+            hr
+            .alternative.well.well-sm(style=' font-size: 20px')
+              .form-group
+                | Select Annotation Type:
+                select#e1(style='width: 100%; ')
+                  {% for item in annotation_types %} 
+                  {% ifequal item.name current %}
+                  option(value='{{item.name}}',selected) {{item.name}}
+                  {% else %}
+                  option(value='{{item.name}}') {{item.name}}
+                  {% endifequal %}
+                  {% endfor %}
+              .form-group
+                div(style='width: 40px; height: 40px; background-color: red')
+              .form-group
+                | Description:
+                input.form-control.description(type='text', disabled='')
+              hr
+
+              .atributoslist
+
+              br
+              a#delete-ann-link.btn.btn-danger(href='') Delete Annotation Type
+
+
+        .col-md-6
+            img.img-responsive(src='/static/archinotes/img/settings.png')
+
+    .hhh(style='display:none')
+      #atributos(style='margin-left: 30px;')
+        .form-group
+          | Input name:
+          input.form-control.input_name(type='text', disabled='')
+        .form-group
+          | Input type:
+          input.form-control.input_type(type='text', disabled='')
+
+- block js
+    script(type="text/javascript")
+
+        $(function(){
+
+          var json = $('#pf').text();
+      
+          obj = JSON.parse(json);
+
+          $( "select option:selected" ).each(function() {
+                var str = $(this).text();
+                $.each(obj, function(i, test) {
+                  if(str === test.name){
+                    $('#delete-ann-link').attr('href','?y='+test.name);
+                    $('.description').val(test.description);
+                    var inputs = test.inputs;
+                    var currEnt = 0;
+                    $.each(inputs, function(j, input) {
+                        currEnt++;
+                        $('#atributos').clone().attr('id','attr'+currEnt).appendTo('.atributoslist');
+                        $('#attr'+currEnt+' .input_name').val(input.input_name);
+                        $('#attr'+currEnt+' .input_type').val(input.input_type);
+                  
+                    });
+                  }
+                });
+              });
+
+          
+          $("#e1").change(function() {
+             $('.atributoslist').html("");
+             $( "select option:selected" ).each(function() {
+                var str = $(this).text();
+                $.each(obj, function(i, test) {
+                  if(str === test.name){
+                    $('#delete-ann-link').attr('href','?y='+test.name);
+                    $('.description').val(test.description);
+                    var inputs = test.inputs;
+                    var currEnt = 0;
+                    $.each(inputs, function(j, input) {
+                        currEnt++;
+                        $('#atributos').clone().attr('id','attr'+currEnt).appendTo('.atributoslist');
+                        $('#attr'+currEnt+' .input_name').val(input.input_name);
+                        $('#attr'+currEnt+' .input_type').val(input.input_type);
+                  
+                    });
+                  }
+                });
+              });
+          }); 
+        });

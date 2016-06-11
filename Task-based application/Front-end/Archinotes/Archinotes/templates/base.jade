@@ -1,0 +1,57 @@
+- load i18n
+- load django_static
+!!! 5
+html
+    head
+        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+        meta(name='keywords', content='')
+        meta(name='description', content='')
+
+        link(href='/static/archinotes/img/logo_32.png', type='image/x-icon', rel='shortcut icon')
+        link(rel='stylesheet', href='/static/archinotes/css/settings.css')
+        link(rel='stylesheet', href="/static/bootstrap/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/static/fontawesome/css/font-awesome.min.css')
+        link(rel='stylesheet', href='/static/sidr/css/jquery.sidr.dark.css')
+        link(rel='stylesheet', href='/static/timeline/css/timeline.css')
+        link(rel='stylesheet', href='/static/timeline/css/timelinexml.basic.css')
+        link(rel='stylesheet', href='/static/toolbar/css/toolbar.css')
+        link(rel='stylesheet', href='/static/collaborative/select2/select2.css')
+
+        - block css
+        - endblock
+
+        - block title
+        - endblock
+
+    body
+        .navbar.navbar-inverse
+            .container
+                .navbar-header
+                    button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand 
+                        img(src='/static/archinotes/img/brand.png')
+                .collapse.navbar-collapse
+                    .navbar-body
+                        - block navbar
+                        - endblock
+
+        .container
+            - block content
+            - endblock
+
+        .footer
+        script(type='text/javascript', src="/static/jquery/js/jquery.min.js")
+        script(type='text/javascript', src="/static/jquery-ui/js/jquery-ui-1.10.4.custom.min.js")
+        script(type='text/javascript', src="/static/bootstrap/js/bootstrap.min.js")
+        script(type="text/javascript", src="/static/jquery-validate/js/jquery.validate.min.js")
+        script(type="text/javascript", src="/static/jquery-validate/js/extensions.js")
+        script(type='text/javascript', src="/static/sidr/js/jquery.sidr.min.js")
+        script(type='text/javascript', src='/static/toolbar/js/toolbar.js')
+        script(type='text/javascript', src='/static/timeline/js/timelinexml.min.js')
+        script(type='text/javascript', src='/static/collaborative/select2/select2.js') 
+        script(type='text/javascript', src='/static/collaborative/js/col_app.js') 
+        - block js
+        - endblock

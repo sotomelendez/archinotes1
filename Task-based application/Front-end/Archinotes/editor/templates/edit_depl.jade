@@ -1,0 +1,52 @@
+- extends 'editor_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects(style='height:500px;')
+        .panel-body
+            div#sidebar(style='float:right;')
+                form(id='addDesktop')
+                    button(type='submit')
+                        svg(width='0', height='0')
+                            img(width='100', height='50', src='/static/archinotes/img/svg/icon_model_desktop.svg')
+                form(id='addDatabase')
+                    button(type='submit')
+                        svg(width='0', height='0')
+                            img(width='100', height='50', src='/static/archinotes/img/svg/icon_model_database.svg')
+
+
+            div#center
+                span#c1(style='display:inline-block;')
+                    img(style='z-index:-1;', src='/static/archinotes/img/svg/icon_model_desktop.svg')
+                    p(style='position:relative; left:40px; bottom:80px;') Desktop1
+
+                span#c2(style='display:inline-block;')
+                    img(style='z-index:-1;', src='/static/archinotes/img/svg/icon_model_desktop.svg')
+                    p(style='position:relative; left:40px; bottom:80px;') Desktop2
+
+                span#c3(style='display:inline-block;')
+                    img(style='z-index:-1;', src='/static/archinotes/img/svg/icon_model_database.svg')
+                    p(style='position:relative; left:40px; bottom:50px;') Database3
+
+-block js
+    script(type="text/javascript")
+        $(function() {
+            $('#simple-menu').sidr();
+            $( "#c1" ).draggable();
+            $( "#c2" ).draggable();
+            $( "#c3" ).draggable();
+        });
+        $( "#addDesktop").submit(function( event ) {
+            event.preventDefault();
+            var content = $("<span style='display:inline-block;'><img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_desktop.svg' /><p style='position:relative; left:40px; bottom:80px;'>Desktop"+($("#center").children().length+1)+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#center" ).append($(content));
+        });
+        $( "#addDatabase").submit(function( event ) {
+            event.preventDefault();
+            var content = $("<span style='display:inline-block;'><img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_database.svg' /><p style='position:relative; left:40px; bottom:50px;'>Database"+($("#center").children().length+1)+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#center" ).append($(content));
+        });

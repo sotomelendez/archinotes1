@@ -1,0 +1,156 @@
+- extends 'pointsofview_base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {{ project_name }}
+
+-block navbar
+    ul.nav.navbar-nav.navbar-right
+        li
+            a(href="{% url 'mgmt:home' %}")
+                i.fa.fa-briefcase
+                | {% trans " Workspace" %}
+        li.dropdown
+            a(class="dropdown-toggle", data-toggle="dropdown")
+                i.fa.fa-user
+                | {% trans " User name" %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li
+                    a(href="{% url 'mgmt:settings' %}")
+                        i.fa.fa-cogs
+                        | {% trans " Settings" %}
+                li
+                    a(href="{% url 'mgmt:help' %}")
+                        i.fa.fa-question
+                        | {% trans " Help" %}
+                li
+                    a(href="/")
+                        i.fa.fa-sin-out
+                        | {% trans " Sign Out" %}
+- block content
+    .row
+        a.btn.btn-primary(id="simple-menu", href="#sidr", style="position:absolute;left:0;margin-left:auto;margin-right:auto;")
+            i.fa.fa-arrow-right
+        .col-md-12#top_menu
+            ul#editor_menu.nav.nav-pills.nav-justified.harabara
+                li
+                    a.btn.btn-default.overview(href="{% url 'editor:context' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans " Context" %}
+                li
+                    a.btn.btn-default.stakeholders(href="{% url 'editor:functional' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans " Functional" %}
+                li
+                    a.btn.btn-default.goals(href="{% url 'editor:deployment' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans " Deployment" %}
+                li
+                    a.btn.btn-default.constraints(href="{% url 'editor:information' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans " Information" %}
+                li
+                    a.btn.btn-default.operations(href="{% url 'editor:concurrency' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans " Concurrency" %}
+                li
+                    a.btn.btn-default.utility_tree(href="{% url 'editor:development' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+
+                        p.lead {% trans " Development" %}
+                li
+                    a.btn.btn-default(href="javascript:switchMenu();") 
+                        i.fa.fa-arrow-circle-o-left.fa-2x
+                        p.lead {% trans "Switch View" %}  
+
+    hr
+    .row
+        -block project_content
+        -endblock
+    .row
+        #sidr.text-center
+            ul#management_menu
+                li
+                    a(href="{% url 'mgmt:overview' project_name %}") 
+                        i.fa.fa-spinner.fa-2x
+                        p.lead {% trans "Overview" %}
+                li
+                    a(href="{% url 'mgmt:stakeholders' project_name %}") 
+                        i.fa.fa-users.fa-2x
+                        p.lead {% trans "Stakeholders" %}
+                li
+                    a(href="{% url 'mgmt:goals' project_name %}") 
+                        i.fa.fa-bullseye.fa-2x
+                        p.lead {% trans "Goals" %}
+                li
+                    a(href="{% url 'mgmt:constraints' project_name %}") 
+                        i.fa.fa-ban.fa-2x
+                        p.lead {% trans "Constraints" %}
+                li
+                    a(href="{% url 'mgmt:operations' project_name %}") 
+                        i.fa.fa-eye.fa-2x
+                        p.lead {% trans "Operations" %}
+                li
+                    a(href="{% url 'mgmt:utility_tree' project_name %}") 
+                        i.fa.fa-sitemap.fa-2x
+                        p.lead {% trans "Utility Tree" %}
+                li
+                    a(href="{% url 'mgmt:quality_requirements' project_name %}") 
+                        i.fa.fa-compass.fa-2x
+                        p.lead {% trans "Quality Req" %}
+                li
+                    a(href="javascript:switchMenu();") 
+                        i.fa.fa-arrow-circle-o-left.fa-2x
+                        p.lead {% trans "Switch View" %}
+
+
+    
+    script(type="text/javascript")
+        function switchMenu(){
+            if($('#editor_menu').hasClass('nav')){
+                var management = $('#management_menu')
+                management.addClass($('#editor_menu').attr('class'))
+                $('#management_menu li a').each(function() {
+                    $(this).addClass('btn btn-default');
+                });
+                var editor = $('#editor_menu')
+                editor.prop('class', null)
+                $('#editor_menu li a').each(function() {
+                    $(this).prop('class', null);
+                });
+                $('#top_menu').empty()
+                $('#top_menu').append(management)
+                $('#sidr').empty()
+                $('#sidr').append(editor)
+            }
+            else if($('#management_menu').hasClass('nav')){
+                var editor = $('#editor_menu')
+                editor.addClass($('#management_menu').attr('class'))
+                $('#editor_menu li a').each(function() {
+                    $(this).addClass('btn btn-default');
+                });
+                var management = $('#management_menu')
+                management.prop('class', null)
+                $('#management_menu li a').each(function() {
+                    $(this).prop('class', null);
+                });
+                $('#top_menu').empty()
+                $('#top_menu').append(editor)
+                $('#sidr').empty()
+                $('#sidr').append(management)
+            }
+        };
+
+        function showMenu () {
+            if($('#col_menu_data').css('right') === '-150px'){
+                $('#col_menu_data').animate({'right':'0'},200);
+                $('#col_menu_btn_icon').removeClass('fa-arrow-left');
+                $('#col_menu_btn_icon').addClass('fa-arrow-right');
+            }
+            else {
+                $('#col_menu_data').animate({'right':'-150'},200);
+                $('#col_menu_btn_icon').removeClass('fa-arrow-right');
+                $('#col_menu_btn_icon').addClass('fa-arrow-left');
+            }
+        }

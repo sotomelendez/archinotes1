@@ -1,0 +1,59 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "Help" %}
+
+-block navbar
+    ul.nav.navbar-nav.navbar-right
+        li
+            a(href="{% url 'mgmt:home' %}") 
+                i.fa.fa-briefcase
+                | {% trans " Workspace" %}
+        li.dropdown
+            a(class="dropdown-toggle", data-toggle="dropdown")
+                i.fa.fa-user
+                | {% trans " User name" %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li
+                    a(href="{% url 'mgmt:settings' %}") 
+                        i.fa.fa-cogs
+                        | {% trans " Settings" %}
+                li.active
+                    a(href="{% url 'mgmt:help' %}") 
+                        i.fa.fa-question
+                        | {% trans " Help" %} 
+                li
+                    a(href="/") 
+                        i.fa.fa-sign-out
+                        | {% trans " Sign Out" %}
+- block content
+    .row
+        h2
+            i.fa.fa-question
+            | {% trans " Help" %}
+        p.lead {% trans "Learn more about Archinotes by completing the 5 steps on the left." %}
+    hr.featurette-divider
+    .row
+        .col-md-3
+            ul.nav.nav-pills.nav-stacked(align='center')
+                li.active
+                    a(href="#") 
+                        | {% trans "Home" %}
+                li
+                    a(href="#") 
+                        | {% trans "Step 1" %}
+                li
+                    a(href="#") 
+                        | {% trans "Step 2" %}
+                li
+                    a(href="#") 
+                        | {% trans "Step 3" %}
+                li
+                    a(href="#") 
+                        | {% trans "Step 4" %}
+                li
+                    a(href="#") 
+                        | {% trans "Step 5" %}                                                                                                             
+        .col-md-9

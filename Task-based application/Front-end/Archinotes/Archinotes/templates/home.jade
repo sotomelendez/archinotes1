@@ -1,0 +1,179 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first Archinotes
+
+-block navbar
+    .row.nav-bar
+        ul.nav.navbar-nav
+            li.active
+                a(href='/') {% trans "Home" %}           
+            li
+                a(href="{% url 'about' %}") {% trans "About" %}   
+        form.navbar-form.navbar-right(id='id_sign_in_form', action="{% url 'sign_in' %}", method='post')
+            -csrf_token
+            .form-inline
+                {{ sign_in_form.email }}
+                {{ sign_in_form.password }}
+                input.btn.btn-primary(type='submit', value='{% trans "Sign In" %}')
+
+-block content
+    .row
+        .jumbotron
+            .container
+                .col-md-8
+                    h1.harabara {% trans "Welcome to Archinotes!" %}
+                    p.lead {% trans "Archinotes is a platform that allows users to build architectures collaboratively." %}
+                .col-md-4
+                    form.form-horizontal(id='id_sign_up_form', action="{% url 'sign_up' %}", method='post')
+                        - csrf_token
+                        .form-group
+                            {{ sign_up_form.email }}
+                        .form-group
+                            {{ sign_up_form.email_confirm }}
+                        .form-group
+                            {{ sign_up_form.password }}
+                        .form-group
+                            {{ sign_up_form.password_confirm }}
+                            #divCheckPasswordMatch
+                        .form-group(align="center")
+                            input.btn.btn-success(type='submit', value='{% trans "Sign Up for Archinotes" %}')
+    hr.featurette-divider
+    .row(align='center')
+        .col-md-10.col-md-offset-1
+            .col-md-4
+                i.fa.fa-globe.fa-5x
+                p.lead {% trans "With the ability to coordinate and control the design process of an architecture in a distributed environment." %}
+            .col-md-4
+                i.fa.fa-files-o.fa-5x
+                p.lead {% trans "Powerful features to facilitate the software architecture design and documentation process." %}
+            .col-md-4
+                i.fa.fa-users.fa-5x
+                p.lead {% trans "Identify and prioritize stakeholders, forces, use cases and quality requirements through different viewpoints." %}
+
+- block js
+    script(type="text/javascript")
+        $(document).ready(function(){
+            var id_sign_in_form = $('#id_sign_in_form');
+            if(id_sign_in_form != undefined) {
+                $(id_sign_in_form).validate({
+                    rules:{
+                        email:{
+                            required:true,
+                        },
+                        password:{
+                            required:true,
+                        }
+                    },
+                    showErrors: function (errorMap, errorList) {
+                        $.each(this.successList, function (index, value) {
+                            $(value).popover('hide');
+                            $(value).closest('.control-group').removeClass('error').addClass('success');
+                        });
+                        return $.each(errorList, function (index, value) {
+                            var _popover = $(value.element).popover({
+                                trigger: 'manual',
+                                placement: 'bottom',
+                                content: value.message,
+                                template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                            });
+                            _popover.data('bs.popover').options.content = value.message;
+                            $(value.element).popover('show');
+                            $(value.element).closest('.control-group').removeClass('success').addClass('error');
+                        });
+                    }
+                });
+            }
+            var id_sign_up_form = $('#id_sign_up_form');
+            if(id_sign_up_form != undefined) {
+                $(id_sign_up_form).validate({
+                    rules:{
+                        email:{
+                            required:true,
+                        },
+                        email_confirm:{
+                            required:true,
+                        },
+                        password:{
+                            required:true,
+                        },
+                        password_confirm:{
+                            required:true,
+                        }
+                    },
+                    showErrors: function (errorMap, errorList) {
+                        $.each(this.successList, function (index, value) {
+                            $(value).popover('hide');
+                            $(value).closest('.control-group').removeClass('error').addClass('success');
+                        });
+                        return $.each(errorList, function (index, value) {
+                            var _popover = $(value.element).popover({
+                                trigger: 'manual',
+                                placement: 'right',
+                                content: value.message,
+                                template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                            });
+                            _popover.data('bs.popover').options.content = value.message;
+                            $(value.element).popover('show');
+                            $(value.element).closest('.control-group').removeClass('success').addClass('error');
+                        });
+                    }
+                });
+            }
+            $("#id_email_confirm").keyup(checkEmailMatch);
+            $("#id_password_confirm").keyup(checkPasswordMatch);
+        });
+        function checkEmailMatch() {
+            var email = $("#id_email_sign_up").val();
+            var confirmEmail = $("#id_email_confirm").val();
+            console.log('email',email,'confirmEmail',confirmEmail)
+            if(email == confirmEmail && email.length > 0 && confirmEmail.length > 0){
+                var _popover = $('#id_email_confirm').popover({
+                    trigger: 'manual',
+                    placement: 'right',
+                    content: 'Emails match!',
+                    template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                });
+                _popover.data('bs.popover').options.content = 'Emails match!';
+                $('#id_email_confirm').popover('show');
+                $('#id_email_confirm').closest('.control-group').removeClass('success').addClass('error');
+            }
+            else{
+                var _popover = $('#id_email_confirm').popover({
+                    trigger: 'manual',
+                    placement: 'right',
+                    content: 'Emails do not match!',
+                    template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                });
+                _popover.data('bs.popover').options.content = 'Emails do not match!';
+                $('#id_email_confirm').popover('show');
+                $('#id_email_confirm').closest('.control-group').removeClass('success').addClass('error');
+            }
+        }
+        function checkPasswordMatch() {
+            var password = $("#id_password_sign_up").val();
+            var confirmPassword = $("#id_password_confirm").val();
+            if(password == confirmPassword && password.length > 0 && confirmPassword.length > 0){
+                var _popover = $('#id_password_confirm').popover({
+                    trigger: 'manual',
+                    placement: 'right',
+                    content: 'Passwords match!',
+                    template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                });
+                _popover.data('bs.popover').options.content = 'Passwords match!';
+                $('#id_password_confirm').popover('show');
+                $('#id_password_confirm').closest('.control-group').removeClass('success').addClass('error');
+            }
+            else{
+                var _popover = $('#id_password_confirm').popover({
+                    trigger: 'manual',
+                    placement: 'right',
+                    content: 'Passwords do not match!',
+                    template: '<div class="popover error"><div class="arrow error"></div><div class="popover-inner"><div class="popover-content error"><p></p></div></div></div>'
+                });
+                _popover.data('bs.popover').options.content = 'Passwords do not match!';
+                $('#id_password_confirm').popover('show');
+                $('#id_password_confirm').closest('.control-group').removeClass('success').addClass('error');
+            }
+        }

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+{% load staticfiles %}
+{% block base_content %}
+
+<section id="title">
+	{% placeholder title %}
+</section>
+
+<section id="sectionBanner">
+	{% placeholder Banner %}
+</section>
+<br/>
+<div align="justify">
+	<section id="section0">
+		{% placeholder overview %}
+	</section>
+</div>
+
+<br/>
+
+<!-- Two rows container -->
+<div class="row-fluid">
+
+	<!-- Sidebar -->
+	<div class="span4">
+		<div class="bs-docs-sidebar well well-small" style="width:270px;" id="sidebar">
+			{% placeholder sidebar %}
+		</div>
+	</div>
+
+	<!-- Content -->
+	<div align="justify" class="span8" id="content">
+		<!-- Sections -->
+		<section id="section1">
+			{% placeholder section1%}
+			<!-- Two rows container -->
+			<div class="row">
+				<!-- Picture -->
+				<div class="span4">
+					{% placeholder picture1 %}
+				</div>
+
+				<!-- Content -->
+				<div class="span8">
+					{% placeholder content1 %}
+
+				</div>
+				<div class="span12">
+					<br/>
+					{% placeholder content1_education %}
+				</div>
+			</div> 
+			<br/>
+			<div class="row">
+				<!-- Picture -->
+				<div class="span4">
+					{% placeholder picture2 %}
+				</div>
+
+				<!-- Content -->
+				<div class="span8">
+					{% placeholder content2 %}
+				</div>
+			</div>
+
+			<!-- Past members subsection -->
+			{% placeholder past_members %}
+
+			<!-- List with past members -->
+			{% placeholder content3 %}
+
+		</section>
+		<section id="section2">
+			{% placeholder section2%}
+		</section>
+		<section id="section3">
+			{% placeholder section3%}
+		</section>
+		<section id="section4">
+			{% placeholder section4%}
+		</section>
+	</div>
+
+</div>
+{% endblock %}

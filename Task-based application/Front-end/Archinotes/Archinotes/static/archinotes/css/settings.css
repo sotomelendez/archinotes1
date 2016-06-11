@@ -1,0 +1,133 @@
+.nav.nav-pills {
+  display:-webkit-flex;
+  -webkit-flex-direction:row;
+
+  display: flex;
+  flex-direction:row;
+}
+
+.nav.nav-pills > li {
+  -webkit-flex:1 1 auto;
+  flex: 1 1 auto;
+  margin-left:10px;
+}
+
+.nav.nav-pills > li:first-child {
+  margin-left: 0px;
+}
+
+@media(max-width:657px) {
+  .nav.nav-pills {
+    display:table;
+  }
+
+  .nav.nav-pills > li {
+    margin-left:0px;
+  }
+}
+
+@font-face {
+    font-family: "Harabara";
+    src: url(Harabara.ttf);
+}
+.harabara {
+    font-family: "Harabara";
+    font-weight: lighter;
+    font-stretch: condensed;
+}
+.panel-projects {
+    height:100%;
+    max-height: 100%;
+    overflow:auto;
+}
+.jumbotron {
+    background-image:url('/static/archinotes/img/banner.png');
+    background-size: cover;
+    background-repeat:no-repeat;
+}
+h5.no-margin{
+  margin: 0;
+  text-align: center;
+}
+.panel.panel-default.quality{
+  border-radius: 25%;
+}
+.panel-body.source-of-stimulus{
+  color: white ;
+  background-color: #febc6a ;
+  border-radius: 25%;
+}
+.panel-body.stimulus{
+  color: white ;
+  background-color: #ffda44 ;
+  border-radius: 25%;
+}
+.panel-body.artifact{
+  color: white ;
+  background-color: #6faddd ;
+  border-radius: 25%;
+}
+.panel-body.enviroment{
+  color: white ;
+  background-color: #98d481 ;
+  border-radius: 25%;
+}
+.panel-body.response{
+  color: white ;
+  background-color: #e73e3e ;
+  border-radius: 25%;
+}
+.panel-body.response-measure{
+  color: white ;
+  background-color: #ff3b60 ;
+  border-radius: 25%; 
+}
+
+.banner { 
+  position: relative; overflow: auto; 
+}
+.banner li { 
+  list-style: none; 
+}
+.banner ul li { 
+  float: left; 
+}
+
+textarea.circle{
+  resize: none;
+  padding: 6px 11px 0px 11px;
+  border-radius: 25%;
+}
+a.btn.btn-default.overview:hover {
+  color: white ;
+  background-color: #e73e3e ;
+}
+a.btn.btn-default.stakeholders:hover {
+  color: white ;
+  background-color: #febc6a ;
+}
+a.btn.btn-default.goals:hover {
+  color: white ;
+  background-color: #6faddd ;
+}
+a.btn.btn-default.constraints:hover {
+  color: white ;
+  background-color: #ff3b60 ;
+}
+a.btn.btn-default.operations:hover {
+  color: white ;
+  background-color: #ffda44 ;
+}
+a.btn.btn-default.user_stories:hover {
+  color: white ;
+  background-color: #98d481 ;
+}
+a.btn.btn-default.utility_tree:hover {
+  color: white ;
+  background-color: #bf8bdb ;
+}
+a.btn.btn-default.circle {
+  border-radius: 100%;
+  width: 100px;
+  height: 100px;
+}

@@ -1,0 +1,25 @@
+[
+
+    {
+        "inputs":[
+            {
+                "input_type":"Escenario_de_calidad",
+                "input_name":"sddsfs"
+            }
+        ],
+        "name":"annotation",
+        "description":"sdfsdfds"
+    },
+
+{
+        "inputs":[
+            {
+                "input_type":"Escenario_de_calidad",
+                "input_name":"sddsfs"
+            }
+        ],
+        "name":"annotation2",
+        "description":"sdfsdfds"
+    }
+
+]

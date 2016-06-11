@@ -1,0 +1,273 @@
+- extends 'mgmt_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects
+        .panel-body(style='height:500px;overflow:auto;')
+            .row
+                -if quality_atributes
+                    .col-md-2
+                        h3.harabara.text-center {% trans "Quality Attributes" %}
+                        #quality_atributes.list-group
+                            -for quality_atribute in quality_atributes
+                                a.list-group-item(id='{{quality_atribute.name}}', onclick="onChangeList('{{quality_atribute.name}}')")
+                                    h5.list-group-item-heading {{quality_atribute.name}}
+                                    p.list-group-item-text
+                                        .row
+                                            .col-md-6.text-center
+                                                p(style='margin: 0;padding: 0;') {{quality_atribute.a}}
+                                            .col-md-6.text-center
+                                                p(style='margin: 0;padding: 0;') {{quality_atribute.b}}
+                    .col-md-10
+                        h3.harabara.text-center {% trans "Quality Scenarios" %}
+                            a.btn(data-toggle='modal', data-target='#add_quality_scenario_modal')
+                                i.fa.fa-plus.fa-2x
+                        #accordion.panel-group
+                            #quality_scenarios
+                                .panel.panel-default
+                                    .panel-heading
+                                        h4.panel-title
+                                            a(data-toggle='collapse', data-parent='#accordion', href='#collapseOne')
+                                                | Quality Scenario 1
+                                    #collapseOne.panel-collapse.collapse.in
+                                        .panel-body
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding:0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.source-of-stimulus
+                                                            h5.no-margin.harabara {% trans "Source of Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Users
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.stimulus
+                                                            h5.no-margin.harabara {% trans "Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Initiatives transactions
+                                            .col-md-2(style='margin: 0;padding: 0;')
+                                                .panel.panel-default.quality
+                                                    .panel-body.artifact
+                                                        h5.no-margin.harabara {% trans "Artifact " %}
+                                                        textarea.circle.form-control System
+                                                .panel.panel-default.quality
+                                                    .panel-body.enviroment
+                                                        h5.no-margin.harabara {% trans "Enviroment " %}
+                                                        textarea.circle.form-control Under normal operations
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response
+                                                            h5.no-margin.harabara {% trans "Response " %}
+                                                            textarea.circle.form-control(rows='7') Transactions are processed 
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response-measure
+                                                            h5.no-margin.harabara {% trans "Response Measure " %}
+                                                            textarea.circle.form-control(rows='7') With average latency of two seconds
+                                .panel.panel-default
+                                    .panel-heading
+                                        h4.panel-title
+                                            a(data-toggle='collapse', data-parent='#accordion', href='#collapseThree')
+                                                | Quality Scenario 2
+                                    #collapseThree.panel-collapse.collapse
+                                        .panel-body
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding:0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.source-of-stimulus
+                                                            h5.no-margin.harabara {% trans "Source of Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Users
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.stimulus
+                                                            h5.no-margin.harabara {% trans "Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Initiatives transactions
+                                            .col-md-2(style='margin: 0;padding: 0;')
+                                                .panel.panel-default.quality
+                                                    .panel-body.artifact
+                                                        h5.no-margin.harabara {% trans "Artifact " %}
+                                                        textarea.circle.form-control System
+                                                .panel.panel-default.quality
+                                                    .panel-body.enviroment
+                                                        h5.no-margin.harabara {% trans "Enviroment " %}
+                                                        textarea.circle.form-control Under normal operations
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response
+                                                            h5.no-margin.harabara {% trans "Response " %}
+                                                            textarea.circle.form-control(rows='7') Transactions are processed 
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response-measure
+                                                            h5.no-margin.harabara {% trans "Response Measure " %}
+                                                            textarea.circle.form-control(rows='7') With average latency of two seconds
+                                .panel.panel-default
+                                    .panel-heading
+                                        h4.panel-title
+                                            a(data-toggle='collapse', data-parent='#accordion', href='#collapseFour')
+                                                | Quality Scenario 3
+                                    #collapseFour.panel-collapse.collapse
+                                        .panel-body
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding:0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.source-of-stimulus
+                                                            h5.no-margin.harabara {% trans "Source of Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Users
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.stimulus
+                                                            h5.no-margin.harabara {% trans "Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Initiatives transactions
+                                            .col-md-2(style='margin: 0;padding: 0;')
+                                                .panel.panel-default.quality
+                                                    .panel-body.artifact
+                                                        h5.no-margin.harabara {% trans "Artifact " %}
+                                                        textarea.circle.form-control System
+                                                .panel.panel-default.quality
+                                                    .panel-body.enviroment
+                                                        h5.no-margin.harabara {% trans "Enviroment " %}
+                                                        textarea.circle.form-control Under normal operations
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response
+                                                            h5.no-margin.harabara {% trans "Response " %}
+                                                            textarea.circle.form-control(rows='7') Transactions are processed 
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response-measure
+                                                            h5.no-margin.harabara {% trans "Response Measure " %}
+                                                            textarea.circle.form-control(rows='7') With average latency of two seconds
+                                .panel.panel-default
+                                    .panel-heading
+                                        h4.panel-title
+                                            a(data-toggle='collapse', data-parent='#accordion', href='#collapseFive')
+                                                | Quality Scenario 4
+                                    #collapseFive.panel-collapse.collapse
+                                        .panel-body
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding:0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.source-of-stimulus
+                                                            h5.no-margin.harabara {% trans "Source of Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Users
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.stimulus
+                                                            h5.no-margin.harabara {% trans "Stimulus " %}
+                                                            textarea.circle.form-control(rows='7') Initiatives transactions
+                                            .col-md-2(style='margin: 0;padding: 0;')
+                                                .panel.panel-default.quality
+                                                    .panel-body.artifact
+                                                        h5.no-margin.harabara {% trans "Artifact " %}
+                                                        textarea.circle.form-control System
+                                                .panel.panel-default.quality
+                                                    .panel-body.enviroment
+                                                        h5.no-margin.harabara {% trans "Enviroment " %}
+                                                        textarea.circle.form-control Under normal operations
+                                            .col-md-5(style='margin: 0;padding: 0;')
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response
+                                                            h5.no-margin.harabara {% trans "Response " %}
+                                                            textarea.circle.form-control(rows='7') Transactions are processed 
+                                                .col-md-6(style='margin: 0;padding: 0;')
+                                                    .panel.panel-default.quality
+                                                        .panel-body.response-measure
+                                                            h5.no-margin.harabara {% trans "Response Measure " %}
+                                                            textarea.circle.form-control(rows='7') With average latency of two seconds
+                                .panel.panel-default
+                                    .panel-heading
+                                        h4.panel-title
+                                            a(data-toggle='collapse', data-parent='#accordion', href='#test')
+                                                | Test
+                                    #test.panel-collapse.collapse
+                                        .panel-body
+                                            .banner
+                                                ul
+                                                    li This is a slide.
+                                                    li This is another slide.
+                                                    li This is the last slide.
+
+    .modal.fade#add_quality_scenario_modal(tabindex='-1', role='dialog', aria-labelledby='add_utility_tree_modal_label', aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                        i.fa.fa-times
+                    h3.modal-title.harabara {% trans 'Quality scenario' %}
+                .modal-body
+                    .banner
+                        ul
+                            li This is a slide.
+                            li This is another slide.
+                            li This is the last slide.
+
+- block js
+    script(type='text/javascript', src='/static/unslider/js/unslider.min.js')
+    script(type='text/javascript')
+        $(function() {
+            $('.banner').unslider();
+        });
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
+        function addQualityScenario(){
+            var name = $('#name').val();
+            var source_of_stimulus = $('#source_of_stimulus').val();
+            var stimulus = $('#stimulus').val();
+            var artifact = $('#artifact').val();
+            var enviroment = $('#enviroment').val();
+            var response = $('#response').val();
+            var response_measure = $('#response_measure').val();
+            var content = '<div class="panel panel-default">';
+            content += '<div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#'+name+'">'+name+'</a></h4></div>';
+            content += '<div id="'+name+'" class="panel-collapse collapse">';
+            content += '<div class="panel-body">';
+            content += 'kjsahdkas';
+            content += '</div>';
+            content += '</div>';
+            content += '</div>';
+            $('#quality_scenarios').append(content);
+            $('#add_quality_scenario_modal').modal('toggle');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+        function onChangeList(item){
+            $('#quality_atributes a').each(function() {
+                $(this).removeClass('active');
+            });
+            $('#'+item).addClass('active');
+            url_value = "{% url 'mgmt:get_quality_attribute_scenarios' project_name %}";
+            $.ajax({
+                dataType : 'json',
+                url : url_value,
+                type : 'GET',
+                data : {'name':item},
+                success : function(data) {                   
+                    var projects = data['queality_scenrios'];
+                    $('#quality_scenarios').empty();
+                    for(i = 0; i < $(projects).length; i++){
+                        var name = projects[i]['name'];
+                        var source_of_stimulus = projects[i]['source_of_stimulus'];
+                        var stimulus = projects[i]['stimulus'];
+                        var artifact = projects[i]['artifact'];
+                        var enviroment = projects[i]['enviroment'];
+                        var response = projects[i]['response'];
+                        var response_measure = projects[i]['response_measure'];
+                        var content = '<div class="panel panel-default">';
+                        content += '<div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#'+name+'">'+name+'</a></h4></div>';
+                        content += '<div id="'+name+'" class="panel-collapse collapse">';
+                        content += '<div class="panel-body">';
+                        content += 'kjsahdkas';
+                        content += '</div>';
+                        content += '</div>';
+                        content += '</div>';
+                        $('#quality_scenarios').append(content);
+                    }
+                },
+                error: function (data) {
+                }
+            });
+
+        }

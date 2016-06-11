@@ -1,0 +1,13 @@
+- extends 'editor_base.jade'
+- load i18n
+
+- block project_content
+    .panel.panel-default.panel-projects(style='height:500px;')
+        .panel-body
+            h1 Concurrency
+
+- block js
+    script(type="text/javascript") 
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
