@@ -1,0 +1,95 @@
+- extends 'col_base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {% trans "Create Annotation Type" %}
+
+   
+- block content
+    a.btn.btn-default(style='height: 40px', href="{% url 'col:settings' %}") Back
+    .row
+        h2
+            i.fa.fa-cogs
+            | {% trans ' Create New Annotation Type' %}
+        p.lead {% trans 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis.' %}
+    hr.featurette-divider
+    .row
+        .col-md-6
+            h1 New Annotation Type
+            br
+            hr
+            form#uform(action="{% url 'col:save_new_annotation_type' %}", method='POST')
+              | {% csrf_token %}
+              div
+                .alternative.well.well-sm
+                  .form-group
+                    input.form-control.description(type='text', placeholder='Annotation name', name='nombre_annotation', required='')
+                  .form-group
+                    textarea.form-control.description(style='resize: vertical', placeholder='Annotation description', name='descripcion_annotation', type='text', required='')
+                hr
+                #entradas(style='margin-left: 30px; font-size: 20px')
+                  #ent1.alternative.well.well-sm
+                    p.title Input 1
+                    .form-group
+                      input#nombreDeEntrada1.form-control.description(type='text', placeholder='Input name', name='nombreDeEntrada1', required='')
+                    .form-group
+                      select#tipoDeEntrada.form-control(name='tipoDeEntrada1')
+                        option(value='String', selected='') String
+                        option(value='Escenario_de_calidad') Escenario de calidad
+                        option(value='Stackholder') Stackholder
+                        option(value='Objetivo_de_negocio') Business goal
+                        option(value='Audio') Audio
+                        option(value='Img') Img
+                button#addEntrada.btn.btn-success(style='margin-left: 30px;') Add Input
+                br
+                br
+                input.btn.btn-success(type='submit', value='Save New Annotation Type') 
+                br
+                br
+                
+            div(style='display: none')
+                  #entrada_base.alternative.well.well-sm
+                    p.title Input 
+                    .form-group
+                      input.form-control.description(type='text', placeholder='Input Name', name='nombreDeEntrada1')
+                    .form-group
+                      select.form-control(name='tipoDeEntrada1')
+                        option(value='-1') Input type
+                        option(value='Escenario_de_calidad') Escenario de calidad
+                        option(value='Stackholder') Stackholder
+                        option(value='Objetivo_de_negocio') Business goal
+                        option(value='String') String
+                        option(value='Audio') Audio
+                        option(value='Img') Img
+
+
+        .col-md-6
+            img.img-responsive(src='/static/archinotes/img/settings.png')
+
+- block js
+    script(type="text/javascript")
+        $(function(){
+                $('#uform').submit(function(){
+                  //alert("nombreDeEntrada1:"+$("#nombreDeEntrada1").val());
+                });
+
+                var currEnt = 1;
+                $('#addEntrada').click(function(e){
+                    e.preventDefault()
+                        currEnt++;
+                        $('#entrada_base').clone().attr('id','ent'+currEnt).appendTo('#entradas');
+                        $('#ent'+currEnt+' input').each(function(index, element) {
+                            var name = $(this).attr('name').replace(/\d+/g, '');
+
+                            var newname = name+''+currEnt;
+                            $(this).attr('name', newname);
+
+                        });
+                        $('#ent'+currEnt+' select').each(function(index, element) {
+                            var name = $(this).attr('name').replace(/\d+/g, '');
+                            var newname = name+''+currEnt;
+                            $(this).attr('name', newname);
+                        });
+                        $('#ent'+currEnt+' p').text($('#ent'+currEnt+' p').text()+' '+currEnt );
+                });
+            });

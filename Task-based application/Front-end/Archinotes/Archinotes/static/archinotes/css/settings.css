@@ -1,3 +1,99 @@
+.navbar.navbar-inverse{
+  background-color:#016AC0;
+  border-color:#016AC0;
+  border-radius:0;
+}
+.navbar-inverse .navbar-nav>.active>a {
+  background-color:#01579E!important;
+  color:white!important;
+}
+.navbar-inverse .navbar-nav>li>a {
+  color:white!important;
+}
+.navbar-inverse .navbar-toggle{
+  border-color:white!important;
+}
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover{
+  background-color:#01579E!important;
+}
+.green{
+  color:#7AB73E;
+}
+.orange{
+  color:#FD8A0B;
+}
+.red{
+  color:#BE0000;
+}
+div.orgChart div.node{
+  border-radius:4px!important;
+  cursor: pointer!important;
+  font-size: 90%!important;
+  padding-top:15px!important;  
+  background-color:white!important;
+  box-shadow:none!important;
+}
+.green-background{
+  background-color:#7AB73E;
+  color:white;
+}
+.orange-background{
+  background-color:#FD8A0B;
+  color:white;
+}
+.blue-background{
+  background-color:#016AC0;
+  color:white;
+}
+.purpuple-background{
+  background-color:#9966CC;
+  color:white;
+}
+.red-background{
+  background-color:#BE0000;
+  color:white;
+}
+.panel-scenarios{
+  height:200px!important;
+}
+.table>tbody>tr.active>td{
+  background-color:#CCCCCC!important;
+}
+input.btn.btn-success{
+  background-color:#7AB73E;
+}
+input.btn.btn-primary{
+  background-color:#016AC0;
+}
+.panel-body.panel-projects.big-panel{
+  height:500px!important;
+}
+.panel-constraints{
+  height:400px!important;
+  overflow:auto!important;
+}
+.right-space{
+  padding-right:50px!important;
+}
+.big-letters{
+  font-size:190%!important;
+}
+.no-margin{
+  margin: 0!important;
+  text-align: center!important;
+}
+.modal-header{
+  background-color:#016AC0;
+  color:white;
+}
+a.btn.btn-primary.side-menu{
+  border-radius:0;
+  background-color:#016AC0;
+  position:absolute;
+  left:0;
+  margin-left:auto;
+  margin-right:auto;
+}
 .nav.nav-pills {
   display:-webkit-flex;
   -webkit-flex-direction:row;
@@ -5,27 +101,41 @@
   display: flex;
   flex-direction:row;
 }
-
 .nav.nav-pills > li {
   -webkit-flex:1 1 auto;
   flex: 1 1 auto;
   margin-left:10px;
 }
-
 .nav.nav-pills > li:first-child {
   margin-left: 0px;
 }
-
 @media(max-width:657px) {
   .nav.nav-pills {
     display:table;
+    font-size:5%
   }
-
   .nav.nav-pills > li {
     margin-left:0px;
+    font-size:5%
   }
 }
-
+tr.active td {
+  background-color: #8fc3f7;
+}
+.bottom-margin{
+  margin:20px;
+}
+.custom-padding{
+  padding:0 0 0 5px !important;
+}
+.goals-style{
+  font-size:130%!important;
+  padding-top:9px!important;
+}
+.goals-style-2{
+  font-size:100%!important;
+  padding-top:9px!important;
+}
 @font-face {
     font-family: "Harabara";
     src: url(Harabara.ttf);
@@ -41,93 +151,162 @@
     overflow:auto;
 }
 .jumbotron {
-    background-image:url('/static/archinotes/img/banner.png');
     background-size: cover;
     background-repeat:no-repeat;
 }
-h5.no-margin{
+h4.no-margin{
   margin: 0;
   text-align: center;
 }
-.panel.panel-default.quality{
-  border-radius: 25%;
+.no-padding{
+  padding: 0 !important;
 }
-.panel-body.source-of-stimulus{
+.small-padding{
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+.no-padding-right{
+  padding-right: 0 !important;
+}
+.no-padding-no-margin{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+p.lead.title{
+  padding-bottom:0; 
+  margin-bottom:0;
+  line-height:118%;
+}
+.panel.panel-default.quality{
+  border-radius: 4%;
+  margin: 0;
+  padding: 0;
+  width: 100% !important;
+  height: 205px !important;
+  border-style:none!important;
+}
+.panel.panel-default.middle{
+  border-style:none!important;
+  width: 110% !important;
+}
+.bottom-top-padding{
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+a.list-group-item.active, a.list-group-item.active:hover{
+  background-color: #016AC0!important;
+  border-color: #016AC0!important;
+}
+.bottom-padding{
+  padding-bottom: 15px !important;
+}
+.panel-body.source{
   color: white ;
-  background-color: #febc6a ;
-  border-radius: 25%;
+  background-color: #FD8A0B ;
+  border-radius: 4%;
+  height: 205px !important;
 }
 .panel-body.stimulus{
   color: white ;
-  background-color: #ffda44 ;
-  border-radius: 25%;
+  background-color: #FFCC00 ;
+  border-radius: 4%;
+  height: 205px !important;
 }
 .panel-body.artifact{
   color: white ;
-  background-color: #6faddd ;
-  border-radius: 25%;
+  background-color: #016AC0 ;
+  border-radius: 4%;
 }
 .panel-body.enviroment{
   color: white ;
-  background-color: #98d481 ;
-  border-radius: 25%;
+  background-color: #7AB73E ;
+  border-radius: 4%;
 }
 .panel-body.response{
   color: white ;
-  background-color: #e73e3e ;
-  border-radius: 25%;
+  background-color: #BE0000 ;
+  border-radius: 4%;
+  height: 205px !important;
 }
 .panel-body.response-measure{
   color: white ;
-  background-color: #ff3b60 ;
-  border-radius: 25%; 
+  background-color: #FF99CC ;
+  border-radius: 4%;
+  height: 205px !important; 
 }
-
-.banner { 
-  position: relative; overflow: auto; 
-}
-.banner li { 
-  list-style: none; 
-}
-.banner ul li { 
-  float: left; 
-}
-
 textarea.circle{
   resize: none;
   padding: 6px 11px 0px 11px;
-  border-radius: 25%;
+  border-radius: 4%;
+}
+a.btn.btn-default.overview.active {
+  color: white ;
+  background-color: #BE0000 ;
+}
+a.btn.btn-default.stakeholders.active  {
+  color: white ;
+  background-color: #FD8A0B ;
+}
+a.btn.btn-default.goals.active  {
+  color: white ;
+  background-color: #016AC0 ;
+}
+a.btn.btn-default.constraints.active  {
+  color: white ;
+  background-color: #FF99CC ;
+}
+a.btn.btn-default.operations.active  {
+  color: white ;
+  background-color: #FFCC00 ;
+}
+a.btn.btn-default.utility_tree.active  {
+  color: white ;
+  background-color: #7AB73E ;
+}
+a.btn.btn-default.viewpoints.active {
+  color: white ;
+  background-color: #CCCCCC;
+}
+a.btn.btn-default.quality_requirements.active  {
+  color: white ;
+  background-color: #9966CC ;
 }
 a.btn.btn-default.overview:hover {
   color: white ;
-  background-color: #e73e3e ;
+  background-color: #BE0000 ;
 }
 a.btn.btn-default.stakeholders:hover {
   color: white ;
-  background-color: #febc6a ;
+  background-color: #FD8A0B ;
 }
 a.btn.btn-default.goals:hover {
   color: white ;
-  background-color: #6faddd ;
+  background-color: #016AC0 ;
 }
 a.btn.btn-default.constraints:hover {
   color: white ;
-  background-color: #ff3b60 ;
+  background-color: #FF99CC ;
 }
 a.btn.btn-default.operations:hover {
   color: white ;
-  background-color: #ffda44 ;
-}
-a.btn.btn-default.user_stories:hover {
-  color: white ;
-  background-color: #98d481 ;
+  background-color: #FFCC00 ;
 }
 a.btn.btn-default.utility_tree:hover {
   color: white ;
-  background-color: #bf8bdb ;
+  background-color: #7AB73E ;
+}
+a.btn.btn-default.quality_requirements:hover {
+  color: white ;
+  background-color: #9966CC ;
+}
+a.btn.btn-default.viewpoints:hover {
+  color: white ;
+  background-color: #CCCCCC;
 }
 a.btn.btn-default.circle {
   border-radius: 100%;
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
+  margin:8px;
 }

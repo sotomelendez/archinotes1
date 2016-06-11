@@ -17,4 +17,4 @@ class SignUpForm(forms.Form):
     password = forms.CharField(widget=widgets.PasswordInput())
     password.widget.attrs = { 'id':'id_password_sign_up', 'class':'form-control', 'required':True, 'placeholder':'Create a password'}
     password_confirm = forms.CharField(widget=widgets.PasswordInput())
-    password_confirm.widget.attrs = { 'class':'form-control', 'required':True, 'placeholder':'Confirm your email' }
+    password_confirm.widget.attrs = { 'class':'form-control', 'required':True, 'placeholder':'Confirm your password' }

@@ -5,7 +5,7 @@ import httplib,json
 
 def invoke_web_service(method, function_path, json_data=dict(), request=None, response_token=True):
     if settings.DEBUG:
-        conn = httplib.HTTPConnection(settings.BACKEND_HOST,'8001')
+        conn = httplib.HTTPConnection(settings.BACKEND_HOST,'8080')
     else:
         conn = httplib.HTTPSConnection(settings.BACKEND_HOST)
     headers = settings.RESTFUL_HEADER
@@ -17,12 +17,16 @@ def invoke_web_service(method, function_path, json_data=dict(), request=None, re
         response_data = response.read()
         conn.close()
         response = json.loads(response_data)
-        if response_token and settings.USER_TOKEN not in response:
-            raise UserTokenError('operation_cancelled')
-        if settings.USER_TOKEN in response and request is not None:
-            request.session[SESSION_KEY] = response[settings.USER_TOKEN]
-            request.user.pk = response[settings.USER_TOKEN]
-            del response[settings.USER_TOKEN]
+
+#        if response_token and settings.USER_TOKEN not in response:
+#            raise UserTokenError('operation_cancelled')
+#        if settings.USER_TOKEN in response and request is not None:
+#            request.session[SESSION_KEY] = response[settings.USER_TOKEN]
+#            request.user.pk = response[settings.USER_TOKEN]
+#            del response[settings.USER_TOKEN]
+
+
+
         return response
     else:
         conn.close()

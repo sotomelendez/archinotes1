@@ -1,0 +1,55 @@
+- load i18n
+
+#panel_quality_scenario.hide
+    form.form-horizontal#form_update_quality_scenarios(action="{% url 'mgmt:update_quality_scenarios' project_name %}", method="post")
+        - csrf_token
+        input#id_qa_name(type="hidden", name="qa_name")
+        input#id_qa_node_name(type="hidden", name="qa_node_name")
+        input#id_qs_name(type="hidden", name="qs_name")
+        .panel.panel-default
+            .panel-heading
+                h4.panel-title
+                    a#id_qs_title(data-toggle="collapse", data-parent="#accordion", href="")
+            .panel-collapse.collapse(id="href")
+                .panel-body
+                    .col-md-12
+                        .col-md-5
+                            .col-md-6
+                                .panel.panel-default.quality
+                                    .panel-body.source.text-center
+                                        h4.no-margin.harabara {% trans 'Source' %}
+                                        i.fa.fa-users.fa-5x.bottom-top-padding
+                                        textarea.circle.form-control#id_source(name="source") {{quality_scenario.source}}
+                            .col-md-6
+                                .panel.panel-default.quality
+                                    .panel-body.stimulus.text-center
+                                        h4.no-margin.harabara {% trans 'Stimulus' %}
+                                        i.fa.fa-bolt.fa-5x.bottom-top-padding
+                                        textarea.circle.form-control#id_stimulus(name="stimulus") {{quality_scenario.stimulus}}
+                        .col-md-2
+                            .panel.panel-default.middle
+                                .panel-body.artifact.text-center
+                                    h4.no-margin.harabara {% trans 'Artifact' %}
+                                    textarea.circle.form-control#id_artifact(name="artifact") {{quality_scenario.artifact}}
+                            .panel.panel-default.middle
+                                .panel-body.enviroment.text-center
+                                    h4.no-margin.harabara {% trans 'Enviroment' %}
+                                    textarea.circle.form-control#id_enviroment(name="enviroment") {{quality_scenario.enviroment}}
+                        .col-md-5
+                            .col-md-6
+                                .panel.panel-default.quality
+                                    .panel-body.response.text-center
+                                        h4.no-margin.harabara {% trans 'Response' %}
+                                        i.fa.fa-envelope.fa-5x.bottom-top-padding
+                                        textarea.circle.form-control#id_response(name="response") {{quality_scenario.response}}
+                            .col-md-6
+                                .panel.panel-default.quality
+                                    .panel-body.response-measure.text-center
+                                        h4.no-margin.harabara {% trans 'Response Measure' %}
+                                        i.fa.fa-tachometer.fa-5x.bottom-padding
+                                        textarea.circle.form-control#id_response_measure(name="response_measure") {{quality_scenario.response_measure}}
+                    .col-md-12.bottom-margin
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success.update_quality_scenarios(type="submit" ) {% trans 'Save' %}
+                        .col-md-6.text-left.harabara
+                            button.btn.btn-danger.delete_quality_scenarios(type="submit" ) {% trans 'Delete' %}

@@ -1,0 +1,950 @@
+- extends 'base.jade'
+- load i18n
+
+-block title
+    title.capitalize-first {{ project_name }}
+
+- block navbar
+    ul.nav.navbar-nav.navbar-left
+        li.active
+            a(href="javascript:goBack();")
+                i.fa.fa-floppy-o
+                | {% trans ' Save and Go Back' %}
+        li.active
+            a(href="javascript:toggleToolbar();")
+                i.fa.fa-arrow-left
+                | {% trans ' Hide/Show Toolbar' %}
+    ul.nav.navbar-nav.navbar-right
+        li.active
+            a(href="{% url 'mgmt:home' %}")
+                i.fa.fa-briefcase
+                | {% trans ' Workspace' %}
+        li.dropdown
+            a(class='dropdown-toggle', data-toggle='dropdown')
+                i.fa.fa-user
+                | {% trans ' User name' %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li
+                    a(href="{% url 'mgmt:settings' %}")
+                        i.fa.fa-cogs
+                        | {% trans ' Settings' %}
+                li
+                    a(href="{% url 'mgmt:help' %}")
+                        i.fa.fa-question
+                        | {% trans ' Help' %}
+                li
+                    a(href="/")
+                        i.fa.fa-sign-out
+                        | {% trans ' Sign Out' %}
+
+    .onoffswitch(style="float:right;margin-top:10px")
+        input#myonoffswitch.onoffswitch-checkbox(type="checkbox", name="onoffswitch", onclick='annotation_activate();')
+        label.onoffswitch-label(for="myonoffswitch")
+            .onoffswitch-inner
+            .onoffswitch-switch
+
+- block content
+    style
+<<<<<<< HEAD
+        div.floating-menu {position:fixed;background:#fff4c8;border:1px solid #ffcc00;width:125px;z-index:100;margin-left:-115px;vertical-align:middle;}
+        div.floating-menu a, div.floating-menu h3 {display:inline-block;}
+        .annotation-selected{background-color:red}
+        .drop-annotations{margin-left:100px;}
+        .hiddden{display:none}
+        ul, il{list-style-type: none;}
+        .annotation_detail {
+            padding:10px;
+        }
+        .annotation_detail:hover{
+            background-color:#C0C0C0;
+        }
+        .annotation_link {
+            color:black;
+        }
+        .no-padding {
+            padding:0;
+        }
+        .accordion_item {
+            padding:10px;
+        }
+        .line-separator{
+            height:1px;
+            background:#717171;
+            border-bottom:1px solid #313030;
+        }
+            .onoffswitch {
+        position: relative; width: 172px;
+        -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+        }
+        .onoffswitch-checkbox {
+        display: none;
+        }
+        .onoffswitch-label {
+        display: block; overflow: hidden; cursor: pointer;
+        border: 2px solid gray; border-radius: 31px;
+        }
+        .onoffswitch-inner {
+        width: 200%; margin-left: -100%;
+        -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+        -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+        }
+        .onoffswitch-inner:before, .onoffswitch-inner:after {
+        float: left; width: 50%; height: 31px; padding: 0; line-height: 31px;
+        font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+        border-radius: 31px;
+        box-shadow: 0px 15.5px 0px rgba(0,0,0,0.08) inset;
+        }
+        .onoffswitch-inner:before {
+        content: "Collaboration ON";
+        padding-left: 10px;
+        background-color: #23BD18; color: #FFFFFF;
+        border-radius: 31px 0 0 31px;
+        }
+        .onoffswitch-inner:after {
+        content: "Collaboration OFF";
+        padding-right: 10px;
+        background-color: #8F8F8F; color: #FFFFFF;
+        text-align: right;
+        border-radius: 0 31px 31px 0;
+        }
+        .onoffswitch-switch {
+        width: 31px; margin: 0px;
+        background: #FFFFFF;
+        border: 2px solid #050505; border-radius: 31px;
+        position: absolute; top: 0; bottom: 0; right: 137px;
+        -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+        -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+        background-image: -moz-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+        background-image: -webkit-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+        background-image: -o-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+        background-image: linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+        box-shadow: 0 1px 1px white inset;
+        }
+        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+        }
+        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px;
+        }
+    #menu.floating-menu
+        #accordion.panel-group
+=======
+        .floating-menu {position:fixed;border:1px; width:115px; z-index:100; margin-left:-115px; margin-top:-20px}
+        .floating-menu a, div.floating-menu h4 {display:inline-block;}
+        #toolbar .panel-heading{background-color:#000000;color:#ffffff;}
+        #toolbar .panel-body{background-color:#bebebe;}
+    #menu.floating-menu(style="visibility:visible;")
+        #toolbar.panel-group
+>>>>>>> master
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseOne') Context
+                #collapseOne.panel-collapse.collapse
+                    .panel-body
+                        form(id='addServer')
+                            button.btn.btn-default(type='submit')
+                                svg(width='30', height='0')
+                                    img(width='40', height='50', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_server.svg')
+                        form(id='addDesktop')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_desktop.svg')
+                        form(id='addTablet')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_tablet.svg')
+                        form(id='addPhone')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_phone.svg')
+                        form(id='addDatabase')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_database.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseTwo') Functional
+                #collapseTwo.panel-collapse.collapse
+                    .panel-body
+                        form(id='addComp')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_component_orange.svg')
+                        form(id='addCollaboration')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_component_collaboration_yellow.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseThree') Deployment
+                #collapseThree.panel-collapse.collapse
+                    .panel-body
+                        form(id='addNode')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_node.svg')
+                        form(id='addNodeBus')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_node_bus.svg')
+                        form(id='addDatabase')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_database.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseFour') Information
+                #collapseFour.panel-collapse.collapse
+                    .panel-body
+                        form(id='addClass')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_class.svg')
+                        form(id='addPackage')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_package.svg')
+                        form(id='addLayer')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_layer.svg')
+                        form(id='addInterface')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_interface.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseFive') Concurrency
+                #collapseFive.panel-collapse.collapse
+                    .panel-body
+                        form(id='addStateBegin')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_begin.svg')
+                        form(id='addStateArtifact')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_artifact.svg')
+                        form(id='addStateState')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_state_yellow.svg')
+                        form(id='addStateGateway')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_gateway_yellow.svg')
+                        form(id='addStateFinish')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_finish.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseSix') Development
+                #collapseSix.panel-collapse.collapse
+                    .panel-body
+                        form(id='addFlowProcess')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_process.svg')
+                        form(id='addFlowExternal')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_external.svg')
+                        form(id='addFlowDatastore')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_datastore.svg')
+
+    #diagramCanvas.panel.panel-default.panel-projects(style='height:600px;')
+
+    .row
+        #col_menu.col_menu(style="position:absolute;right:0;top:75px;margin-left:auto;margin-right:auto;")
+            a#col_menu_btn.btn.btn-primary(onclick="showMenu()")
+                i#col_menu_btn_icon.fa.fa-arrow-left
+            #col_menu_data.col_menu_data(style='position:absolute;width:150px;right:-150px;')
+<<<<<<< HEAD
+                
+                a.btn.btn-primary.btn-block(style='margin-bottom:5px;margin-top:5px', onclick='load_annotation_types()', data-toggle='modal', data-target='#myModal') Hacer comentario
+                
+=======
+
+                a.btn.btn-primary.btn-block(style='margin-bottom:5px;margin-top:5px', onclick='load_annotation_types()', data-toggle='modal', data-target='#myModal') Hacer comentario
+
+>>>>>>> master
+                div#accordion.panel-group(style='margin-bottom:5px')
+                  div.panel.panel-default
+                    div.panel-heading(style="color: rgb(255, 255, 255); background-color: rgb(66, 139, 202); border-color: rgb(53, 126, 189);")
+                      h4.panel-title
+                        a(data-toggle='collapse', data-parent='#accordion', href='#collapseAnnotations', style='font-size: 14px;')
+<<<<<<< HEAD
+                          | Filter
+                    div#collapseAnnotations.panel-collapse.collapse.in
+                        ul#lista_annotation_types_menu(style='margin-right:20px')
+
+                div#accordion1.panel-group(style='margin-bottom:5px')
+                  div.panel.panel-default
+                    div.panel-heading(style="color: rgb(255, 255, 255); background-color: rgb(66, 139, 202); border-color: rgb(53, 126, 189);")
+                      h4.panel-title
+                        a(data-toggle='collapse', data-parent='#accordion1', href='#collapseAnnotations1', style='font-size: 14px;')
+                          | Annotations
+                    div#collapseAnnotations1.panel-collapse.collapse.in
+                        ul#list_annotation_types_menu(style='margin-right:20px')
+
+                div#accordion2.panel-group(style='margin-bottom:5px')
+                  div.panel.panel-default
+                    div.panel-heading(style="color: rgb(255, 255, 255); background-color: rgb(66, 139, 202); border-color: rgb(53, 126, 189);")
+                      h4.panel-title
+                        a(data-toggle='collapse', data-parent='#accordion2', href='#collapseAnnotations2', style='font-size: 14px;')
+                          | Selected Annotation
+                    div#collapseAnnotations2.panel-collapse.collapse.in
+                        ul#lia_annotation_types_menu(style='margin-right:20px')
+
+=======
+                          | Ver anotaciones
+                    div#collapseAnnotations.panel-collapse.collapse.in
+                      div.panel-body
+                        | BODY
+
+
+                a.btn.btn-primary.btn-block(onclick='annotation_activate();') Seleccionar
+>>>>>>> master
+
+    #myModal.modal.fade(aria-hidden='true', aria-labelledby='myModalLabel', role='dialog', tabindex='-1')
+      .modal-dialog
+        .modal-content
+<<<<<<< HEAD
+            form#uform(action="{% url 'col:save_new_annotation' %}", method='POST')
+              input#col_elements_hidden(type='hidden', name='elements')
+              | {% csrf_token %}
+              .modal-header
+                button.close(aria-hidden='true', data-dismiss='modal', type='button') ×
+                h4#myModalLabel.modal-title New Annotation
+              .modal-body
+                .cont(style="width:250px;margin-left:auto;margin-right:auto")
+                    .modal-annotation-error
+                    select#modal-annotation-types(style="width:100%", name='name_annotation_type')
+
+                    .annotation-form
+              .modal-footer
+                button.btn.btn-default(data-dismiss='modal', type='button') Close
+                input.btn.btn-primary(type='submit', value='Save changes') 
+
+
+=======
+          .modal-header
+            button.close(aria-hidden='true', data-dismiss='modal', type='button') ×
+            h4#myModalLabel.modal-title New Annotation
+          .modal-body
+            .cont(style="width:250px;margin-left:auto;margin-right:auto")
+                .modal-annotation-error
+                select#modal-annotation-types(style="width:100%")
+
+                .annotation-form
+          .modal-footer
+            button.btn.btn-default(data-dismiss='modal', type='button') Close
+            button.btn.btn-primary(type='button') Save changes
+>>>>>>> master
+
+-block js
+    script(type='text/javascript', src="/static/archinotes/js/jquery.connections.js")
+    script(type='text/javascript', src="/static/archinotes/js/jquery-timing.min.js")
+    script(type="text/javascript")
+        $(document).ready(function() {
+            var prev = document.referrer;
+            if(prev.indexOf("context") != -1)
+            {
+                $('#collapseOne').addClass("in");
+            }
+            else if(prev.indexOf("functional") != -1)
+            {
+                $('#collapseTwo').addClass("in");
+            }
+            else if(prev.indexOf("deployment") != -1)
+            {
+                $('#collapseThree').addClass("in");
+            }
+            else if(prev.indexOf("information") != -1)
+            {
+                $('#collapseFour').addClass("in");
+            }
+            else if(prev.indexOf("concurrency") != -1)
+            {
+                $('#collapseFive').addClass("in");
+            }
+            else if(prev.indexOf("development") != -1)
+            {
+                $('#collapseSix').addClass("in");
+            }
+            $.repeat().add('connection').each($).connections('update').wait(0);
+        });
+    script(type="text/javascript")
+<<<<<<< HEAD
+        var idd=0;
+        var glob_obj;
+        var glob_obj_2;
+        $( "#addDesktop").submit(function( event ) {
+            event.preventDefault();
+            var content = $("<span class='annotation_element' onclick='annotation_select(this)' id="+idd+"  style='display:inline-block;'>"+
+            "<div class='dropdown drop-annotations hiddden' >"+
+              "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                "<span class='caret'></span>"+
+              "</a>"+
+              "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+              "</ul>"+
+            "</div>"+
+            "<img style='z-index:-1;' width='125px' height='125x' src='/static/archinotes/img/svg/icon_model_desktop.svg' /><p style='position:relative; left:40px; bottom:80px;'>Desktop"+($("#diagramCanvas").children().length+1)+"</p></span>");
+            idd++;
+=======
+        $( "#addServer").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='100px' height='125x' src='/static/archinotes/img/svg/icon_model_server.svg' /><p style='position:relative; left:25px; bottom:65px;'>Server"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addDesktop").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125x' src='/static/archinotes/img/svg/icon_model_desktop.svg' /><p style='position:relative; left:40px; bottom:80px;'>Desktop"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addTablet").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='75px' src='/static/archinotes/img/svg/icon_model_tablet.svg' /><p style='position:relative; left:40px; bottom:40px;'>Tablet"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addPhone").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='80px' height='125px' src='/static/archinotes/img/svg/icon_model_phone.svg' /><p style='position:relative; left:16px; bottom:80px;'>Phone"+compId+"</p></span>");
+>>>>>>> master
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addDatabase").submit(function( event ) {
+            event.preventDefault();
+<<<<<<< HEAD
+            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_database.svg' /><p style='position:relative; left:40px; bottom:50px;'>Database"+($("#diagramCanvas").children().length+1)+"</p></span>");
+            idd++;
+=======
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_database.svg' /><p style='position:relative; left:40px; bottom:50px;'>Database"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addComp").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_component_orange.svg' /><p style='position:relative; left:40px; bottom:45px;'>Component"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addCollaboration").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_component_collaboration_yellow.svg' /><p style='position:relative; left:15px; bottom:75px;'>Collaboration"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addNode").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_node.svg' /><p style='position:relative; left:15px; bottom:75px;'>Node"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addNodeBus").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='60px' src='/static/archinotes/img/svg/icon_model_node_bus.svg' /><p style='position:relative; left:15px; bottom:40px;'>Bus"+compId+"</p></span>");
+>>>>>>> master
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addClass").submit(function( event ) {
+            event.preventDefault();
+<<<<<<< HEAD
+            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_class.svg' /><p style='position:relative; left:40px; bottom:80px;'>Class"+($("#diagramCanvas").children().length+1)+"</p></span>");
+            idd++;
+=======
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_class.svg' /><p style='position:relative; left:40px; bottom:80px;'>Class"+compId+"</p></span>");
+>>>>>>> master
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addPackage").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_package.svg' /><p style='position:relative; left:40px; bottom:80px;'>Package"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addLayer").submit(function( event ) {
+            event.preventDefault();
+<<<<<<< HEAD
+            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_component_orange.svg' /><p style='position:relative; left:40px; bottom:45px;'>Component"+($("#diagramCanvas").children().length+1)+"</p></span>");
+            idd++;
+=======
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='60px' src='/static/archinotes/img/svg/icon_model_layer.svg' /><p style='position:relative; left:15px; bottom:40px;'>Layer"+compId+"</p></span>");
+>>>>>>> master
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addInterface").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_interface.svg' /><p style='position:relative; left:15px; bottom:40px;'>Interface"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addStateBegin").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_state_begin.svg' /><p style='position:relative; left:15px; bottom:40px;'>Begin</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addStateArtifact").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_state_artifact.svg' /><p style='position:relative; left:40px; bottom:80px;'>Artifact"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addStateState").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_state_state_yellow.svg' /><p style='position:relative; left:40px; bottom:80px;'>State"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addStateGateway").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='90px' height='125px' src='/static/archinotes/img/svg/icon_model_state_gateway_yellow.svg' /><p style='position:relative; left:15px; bottom:80px;'>Gateway"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addStateFinish").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_state_finish.svg' /><p style='position:relative; left:15px; bottom:40px;'>Finish</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addFlowProcess").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_flow_process.svg' /><p style='position:relative; left:40px; bottom:80px;'>Process"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addFlowProcess").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_flow_process.svg' /><p style='position:relative; left:40px; bottom:80px;'>Process"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addFlowExternal").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_flow_external.svg' /><p style='position:relative; left:40px; bottom:60px;'>External"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        $( "#addFlowDatastore").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'><img style='z-index:-1;' width='125px' height='50px' src='/static/archinotes/img/svg/icon_model_flow_datastore.svg' /><p style='position:relative; left:40px; bottom:30px;'>Datastore"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+        });
+        function goBack(){
+            window.history.back();
+        }
+<<<<<<< HEAD
+        function annotation_select(item)
+        {        
+=======
+        function toggleToolbar()
+        {
+            if(document.getElementById("menu").style.visibility=='hidden')
+            {
+                document.getElementById("menu").style.visibility='visible';
+            }
+            else
+            {
+                document.getElementById("menu").style.visibility='hidden';
+            }
+        }
+        function doubleClick(clicked_id)
+        {
+            var nodes = document.getElementsByClassName('connsource');
+            if(nodes.length > 0)
+            {
+                $(nodes[0]).connections({to: "#"+clicked_id});
+                nodes[0].className = "";
+            }
+            else
+            {
+                document.getElementById(clicked_id).className='connsource';
+            }
+        }
+        function annotation_select(item)
+        {
+>>>>>>> master
+            if(col_edit)
+            {
+                var noesta=true;
+                $.each(col_elements, function( index, value ) {
+                    if(value == item.id)
+                    {
+                        col_elements.splice(index, 1);
+                        noesta=false;
+                        $("#"+item.id).removeClass('annotation-selected');
+                    }
+                });
+                if(noesta)
+                {
+                    col_elements.push(item.id);
+                    $("#"+item.id).addClass('annotation-selected');
+                }
+<<<<<<< HEAD
+                
+            }
+            
+=======
+
+            }
+
+>>>>>>> master
+        }
+        function showMenu () {
+            if($('#col_menu_data').css('right') === '-150px'){
+                $('#col_menu_data').animate({'right':'0'},200);
+                $('#col_menu_btn_icon').removeClass('fa-arrow-left');
+                $('#col_menu_btn_icon').addClass('fa-arrow-right');
+            }
+            else {
+                $('#col_menu_data').animate({'right':'-150'},200);
+                $('#col_menu_btn_icon').removeClass('fa-arrow-right');
+                $('#col_menu_btn_icon').addClass('fa-arrow-left');
+            }
+        }
+        function annotation_activate()
+        {
+<<<<<<< HEAD
+
+            $('#col_elements_hidden').val(col_elements);
+                $('.modal-annotation-error').html('');
+
+                $.ajax({
+                    url: "{% url 'col:get_all_annotation_types' %}"
+                }).done(function(msg) {
+                    var new_html2 = '';
+                    glob_obj = JSON.parse(msg);
+                    
+                    $.each(glob_obj, function(i, test) {
+                        var esta=false;
+                        $.each(glob_obj_2, function(index,val){
+                                                
+                            if(val.name_annotation_type === test.name){
+                                var elem_list = val.elements.split(',');
+                                $.each(elem_list, function(kk,element9){
+
+                                    $(".annotation_element").each(function(){
+                                        if($(this).attr('id') == element9)
+                                        {
+                                            esta=true;
+                                        }
+
+                                    });
+                                });
+                            }
+                        });
+                        if(esta === true){
+                            new_html2+='<li><div class="checkbox"><label><input type="checkbox" id="annotation_checkbox_'+test.name+'" onchange="filter_annotations()"> '+test.name+'</label></div></li>';
+                        }
+                        
+                    });
+                    $('#lista_annotation_types_menu').html(new_html2);
+                    
+                });
+
+=======
+>>>>>>> master
+            if(col_edit){
+                col_edit=false;
+                $(".annotation-selected").removeClass('annotation-selected');
+                col_elements=[];
+<<<<<<< HEAD
+                $(".hiddden").hide();
+            }
+            else
+            {
+                
+                col_edit=true;
+                $.ajax({
+                    url: "{% url 'col:get_all_annotations' %}"
+                }).done(function(msg) {
+                    added_list = [];
+                    $(".annotation-type-container-annotations").html("");
+                    //[{"deleted": false, "name_annotation_type": "Desacuerdo", "_id": {"$oid": "534269d21d41c8179f51c4e1"}, "annotation_data": [{"Titulo": "zzzz"}, {"Razon": "xxxx"}], "elements": "1,0"}]
+                    
+                    glob_obj_2 = JSON.parse(msg);
+                    
+                    //recorro todos las anotaciones
+                    $.each(glob_obj_2, function(i, test) {
+                        ele = test.elements.split(',');
+                        //recorro todos los ids de los elementos asociados a esta anotacion
+                        $.each(ele, function(k,ele_id){
+                            //esto contiene la lista provicional para este elemento toca hacer un append
+                            var new_html = '';
+                            //si elemento ya tiene comentarios
+                            if(added_list[ele_id] != null)
+                            {
+                                //miramos a ver si ya tiene comentarios con el mismo annotation type
+                                var noesta = true;
+                                $.each(added_list[ele_id],function(j,annotation_types_en_elemento){
+                                    //si si entonces no hace nada
+                                    if(annotation_types_en_elemento == test.name_annotation_type)
+                                    {
+                                        noesta=false;
+                                    }
+                                
+                                });
+                                // si no entonces lo agrega y a la lista tambien
+                                if(noesta)
+                                {
+                                     new_html+='<li><a onclick="view_annotations_a(this)" rrr="holaaaa"  data-toggle="modal" data-target="#viewAnnotations">'+test.name_annotation_type+'</a></li>';
+                                     added_list[ele_id].push(test.name_annotation_type);
+                                }
+                            }
+                            //si aun no tiene comentarios inicalizo la lista de sus annotation types y agrego el comentario
+                            else
+                            {
+                                added_list[ele_id] = [];
+                                new_html+='<li><a onclick="view_annotations_a(this)" rrr="holaaaa" data-toggle="modal" data-target="#viewAnnotations">'+test.name_annotation_type+'</a></li>';
+                                added_list[ele_id].push(test.name_annotation_type);
+                            }
+                            //agarro el elemento grafico q contiene la lista
+                            respuesta = $("#"+ele_id).find(".annotation-type-container-annotations");
+                            
+                            respuesta.append(new_html);
+                            $("#"+ele_id).find(".hiddden").show();
+
+                        });
+                        
+                       
+                    });
+                    
+                });
+=======
+                alert('Annotation mode off');
+            }
+            else
+            {
+                col_edit=true;
+                alert('Annotation mode on');
+>>>>>>> master
+            }
+        }
+        function load_annotation_types()
+        {
+<<<<<<< HEAD
+            
+            if(col_elements.length > 0)
+            {
+                $('#col_elements_hidden').val(col_elements);
+=======
+
+            if(col_elements.length > 0)
+            {
+>>>>>>> master
+                $('.modal-annotation-error').html('');
+
+                $.ajax({
+                    url: "{% url 'col:get_all_annotation_types' %}"
+                }).done(function(msg) {
+                    var new_html = '<option value="-1">Select one...</option>';
+<<<<<<< HEAD
+                    //alert(msg);
+                    glob_obj = JSON.parse(msg);
+                
+                    $.each(glob_obj, function(i, test) {
+                        new_html+='<option value="'+test.name+'">'+test.name+'</option>';
+
+                    });
+                    $('#modal-annotation-types').html(new_html);
+
+                    
+                });
+      
+                
+=======
+                    glob_obj = JSON.parse(msg);
+
+                    $.each(glob_obj, function(i, test) {
+                        new_html+='<option value="'+test.name+'">'+test.name+'</option>';
+                    });
+                    $('#modal-annotation-types').html(new_html);
+                });
+
+
+>>>>>>> master
+            }
+            else
+            {
+                var new_html='<h5 style="color:red">Error: Please select elements to make annotation</h5>';
+                $('.modal-annotation-error').html(new_html);
+            }
+<<<<<<< HEAD
+            
+        }
+        $(function(){
+            annotation_activate();
+            annotation_activate();
+            
+        });
+        $("#modal-annotation-types").change(function() {
+             
+=======
+
+        }
+        var glob_obj;
+        $("#modal-annotation-types").change(function() {
+
+>>>>>>> master
+             var new_html='<br>';
+             $( "select option:selected" ).each(function() {
+                var str = $(this).text();
+                $.each(glob_obj, function(i, test) {
+                  if(str === test.name){
+                    var inputs = test.inputs;
+                    $.each(inputs, function(j, input) {
+                        new_html+='<label>'+input.input_name+'</label><input type="hidden" value="'+input.input_name+'" name="inp'+j+'" /><br>';
+                        if(input.input_type == 'String')
+                        {
+                            new_html+='<input type="text" name="val'+j+'" /><br>';
+                        }
+                        else if(input.input_type == 'Escenario_de _calidad' || input.input_type == 'Stackholder' || input.input_type == 'Objetivo_de_negocio')
+                        {
+                            new_html+='<select name="val'+j+'" ><option>opcion A</option><option>opcion B</option></select><br>';
+                        }
+                        else
+                        {
+                            new_html+='<input type="file" name="val'+j+'" /><br>';
+                        }
+
+<<<<<<< HEAD
+                  
+                    });
+                  }
+                }); 
+              });
+              $('.annotation-form').html(new_html);
+          });
+          function view_annotations_a(item)
+          {
+                alert("a: "+item.rrr)
+                //TODO aca falta mostrar el modal con todos los comentarios que estan en el JSON que llego esto con los tos a's que estan en la lisneas 240 y 248
+                //$('#unicoo').text(item.data('id'));
+          }
+          function filter_annotations(){
+            $('#collapseAnnotations1').html('');
+           var l = $('input:checkbox[id^="annotation_checkbox_"]');
+           var html = "<ul class='no-padding'>";
+           $.each(l, function(index,value){
+                var isChecked = $('#'+value.id).is(':checked');
+                if(isChecked) {
+                    var ann_name = value.id.split("_")[2];
+                    var inp = get_annotation_data(ann_name)[0];
+                    if(inp !== ""){
+                        var prop;
+                        for (var name in inp) {
+                          prop = inp[name];
+                        }
+                        html+='<a class="annotation_link" onclick="get_annotation_details(\''+ann_name+'\')" href="#"><li class="annotation_detail">'+prop+'</li></a>';
+                    }
+                }
+            });
+           html += "</ul>";
+           $('#collapseAnnotations1').html(html);
+          }
+          function get_annotation_data(ann_name){
+            var l = glob_obj_2;
+            for(var i = 0; i<l.length; i++){
+                if(l[i].name_annotation_type === ann_name){
+                    return l[i].annotation_data;
+                }
+            }
+            return "";
+          }
+          function get_annotation(ann_name){
+            var l = glob_obj;
+            for(var i = 0; i<l.length; i++){
+                if(l[i].name === ann_name){
+                    return l[i];
+                }
+            }
+            return "";
+          }
+          function get_annotation_details(ann_name) {
+            $('#collapseAnnotations2').html('');
+            var data = get_annotation_data(ann_name);
+            var html = "<ul class='no-padding'>";
+            $.each(data, function(index, value){
+                for (var name in value) {
+                  prop = value[name];
+                  html += "<li class='accordion_item'>"+prop+"</li><div class='line-separator'></div>";
+                }
+            });
+            html += "</ul>";
+            $('#collapseAnnotations2').html(html);
+          }
+
+=======
+
+                    });
+                  }
+                });
+              });
+              $('.annotation-form').html(new_html);
+          });
+>>>>>>> master

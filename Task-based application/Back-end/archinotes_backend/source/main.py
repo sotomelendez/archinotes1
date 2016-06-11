@@ -18,19 +18,37 @@ from modules.communication.annotation_resource import *
 #from modules.archinotes_backend.authentication.signup_resource import *
 
 ''' Management Module imports '''
-
-# User resource  imports
 #from modules.management.user_resource import *
+from modules.management.overview_resource import *
+from modules.management.stakeholder_resource import *
+from modules.management.business_goal_resource import *
+from modules.management.constraint_resource import *
+from modules.management.operational_scenario_resource import *
+from modules.management.utility_tree_resource import *
+from modules.management.quality_requirement_resource import *
+from modules.management.project_resource import *
+from modules.management.team_resource import *
 
 
 
-''' Results Module imports '''
+''' Configuration Module imports '''
+from modules.configuration.stakeholders_types_resource import *
+from modules.configuration.quality_atributes_types_resource import *
+from modules.configuration.measures_types_resource import *
+from modules.configuration.constraints_types_resource import *
 
 
-''' Vote Count Module imports '''
+''' Communication Module imports '''
 
-
-''' Voting Table imports '''
+''' Editor Module imports '''
+# Diagram resource  imports
+from modules.editor.diagram_resource import *
+# Diagram versions resource  imports
+from modules.editor.diagram_version_resource import *
+# Diagram elements resource  imports
+from modules.editor.diagram_element_resource import *
+# Diagram connections resource  imports
+from modules.editor.diagram_connection_resource import *
 
 
 ''' Listeners '''
@@ -47,10 +65,10 @@ from modules.communication.annotation_resource import *
 #cherrypy.config.update(os.path.join(settings.CONFIGURATION_FOLDER, settings.CONFIGURATION_FILE))
 
 # Inits the database
-#cherrypy.tools.db = MongoTool()
+cherrypy.tools.db = MongoTool()
 
 # Inits the redis database
-#cherrypy.tools.cache = RedisTool()
+cherrypy.tools.cache = RedisTool()
 
 # Start the server
 

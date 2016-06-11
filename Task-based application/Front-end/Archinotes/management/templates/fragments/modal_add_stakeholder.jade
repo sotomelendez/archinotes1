@@ -1,0 +1,39 @@
+- load i18n
+
+#modal_add_stakeholder.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_stakeholder_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_add_stakeholder_label.modal-title.harabara {% trans 'New stakeholder' %}
+            .modal-body
+                form.form-horizontal#add_stakeholder_form(action="{% url 'mgmt:new_stakeholder' project_name %}", method="post")
+                    - csrf_token
+                    .form-group
+                        input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                        input#id_old_name(type="hidden", name="old_name", value="")
+                        label.col-md-4.control-label(for="id_name") * {% trans 'Name' %}:
+                        .col-md-8
+                            {{form.name}}
+                    .form-group
+                        label.col-md-4.control-label(for="id_stakeholders_types") * {% trans 'Type' %}:
+                        .col-md-8
+                            {{form.stakeholders_types}}
+                    .form-group
+                        label.col-md-12.text-center(for="id_concern_description") * {% trans 'Concerns' %}:
+                        .col-md-10.no-padding-right
+                            {{form.concern_description}}
+                        .col-md-2
+                            a.btn.no-padding.green(href="javascript:addConcern();")
+                                i.fa.fa-plus
+                            a.btn.no-padding.red(href="javascript:deleteConcern();")
+                                i.fa.fa-minus
+                    .form-group
+                        .col-md-12
+                            {{form.concerns}}
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success#add_stakeholder_add(type="submit" ) {% trans 'Add' %}
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning.add_stakeholder_cancel(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

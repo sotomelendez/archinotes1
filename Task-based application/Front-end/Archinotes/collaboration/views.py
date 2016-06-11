@@ -97,8 +97,9 @@ def save_new_annotation_type(request):
 				stakeholders.append(dicts)
 
 			#return HttpResponse(str(json.dumps(data)))
-			return render(request, 'col_settings.jade', {'annotation_types':data, 'annotation_string':str(json.dumps(data)), 'stakeholders':stakeholders })
+			#return render(request, 'col_settings.jade', {'annotation_types':data, 'annotation_string':str(json.dumps(data)), 'stakeholders':stakeholders })
 			#return render(request, 'col_settings.jade', { })
+			return redirect('col:settings')
 		except urllib2.HTTPError, e:
 			print "HTTP error: %d" % e.code
 		except urllib2.URLError, e:

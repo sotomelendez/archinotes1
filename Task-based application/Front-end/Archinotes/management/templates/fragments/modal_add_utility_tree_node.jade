@@ -1,0 +1,22 @@
+- load i18n
+
+#modal_add_utility_tree_node.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_utility_tree_node_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_add_utility_tree_node_label.modal-title.harabara {% trans 'Modify utility tree' %}
+            .modal-body
+                form.form-horizontal#form_update_utility_tree(action="{% url 'mgmt:add_utility_tree' project_name %}", method="post")
+                    - csrf_token
+                    input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                    .form-group    
+                        label.col-md-4.control-label(for="id_quality_attribute_name") * {% trans 'Name' %}:
+                        .col-md-8
+                            input.form-control#id_quality_attribute_name(type="text", name="quality_attribute_name")
+                    .form-group
+                        .col-md-6.harabara.text-right
+                            button.btn.btn-success(type="submit") {% trans 'Add' %}
+                        .col-md-6.harabara.text-left
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

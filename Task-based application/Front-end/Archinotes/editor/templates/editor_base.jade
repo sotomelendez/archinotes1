@@ -32,37 +32,37 @@
     .row
         a.btn.btn-primary(id="simple-menu", href="#sidr", style="position:absolute;left:0;margin-left:auto;margin-right:auto;")
             i.fa.fa-arrow-right
-        .col-md-12#top_menu
+        .col-md-11#top_menu
             ul#editor_menu.nav.nav-pills.nav-justified.harabara
                 li
-                    a.btn.btn-default.overview(href="{% url 'editor:context' project_name %}") 
+                    a.btn.btn-default.overview(href="{% url 'editor:context' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans " Context" %}
                 li
-                    a.btn.btn-default.stakeholders(href="{% url 'editor:functional' project_name %}") 
+                    a.btn.btn-default.stakeholders(href="{% url 'editor:functional' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans " Functional" %}
                 li
-                    a.btn.btn-default.goals(href="{% url 'editor:deployment' project_name %}") 
+                    a.btn.btn-default.goals(href="{% url 'editor:deployment' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans " Deployment" %}
                 li
-                    a.btn.btn-default.constraints(href="{% url 'editor:information' project_name %}") 
+                    a.btn.btn-default.constraints(href="{% url 'editor:information' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans " Information" %}
                 li
-                    a.btn.btn-default.operations(href="{% url 'editor:concurrency' project_name %}") 
+                    a.btn.btn-default.operations(href="{% url 'editor:concurrency' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans " Concurrency" %}
                 li
-                    a.btn.btn-default.utility_tree(href="{% url 'editor:development' project_name %}") 
+                    a.btn.btn-default.utility_tree(href="{% url 'editor:development' project_name %}")
                         i.fa.fa-sitemap.fa-2x
 
                         p.lead {% trans " Development" %}
-                li
-                    a.btn.btn-default(href="javascript:switchMenu();") 
-                        i.fa.fa-arrow-circle-o-left.fa-2x
-                        p.lead {% trans "Switch View" %}  
+
+        .col-md-1
+            a.btn.btn-primary(href="javascript:switchMenu();")
+                i.fa.fa-refresh
 
     hr
     .row
@@ -72,41 +72,42 @@
         #sidr.text-center
             ul#management_menu
                 li
-                    a(href="{% url 'mgmt:overview' project_name %}") 
-                        i.fa.fa-spinner.fa-2x
+                    a(href="{% url 'mgmt:overview' project_name %}")
+                        i.fa.fa-refresh.fa-2x
                         p.lead {% trans "Overview" %}
                 li
-                    a(href="{% url 'mgmt:stakeholders' project_name %}") 
+                    a(href="{% url 'mgmt:stakeholders' project_name %}")
                         i.fa.fa-users.fa-2x
                         p.lead {% trans "Stakeholders" %}
                 li
-                    a(href="{% url 'mgmt:goals' project_name %}") 
+                    a(href="{% url 'mgmt:goals' project_name %}")
                         i.fa.fa-bullseye.fa-2x
                         p.lead {% trans "Goals" %}
                 li
-                    a(href="{% url 'mgmt:constraints' project_name %}") 
+                    a(href="{% url 'mgmt:constraints' project_name %}")
                         i.fa.fa-ban.fa-2x
                         p.lead {% trans "Constraints" %}
                 li
-                    a(href="{% url 'mgmt:operations' project_name %}") 
+                    a(href="{% url 'mgmt:operations' project_name %}")
                         i.fa.fa-eye.fa-2x
                         p.lead {% trans "Operations" %}
                 li
-                    a(href="{% url 'mgmt:utility_tree' project_name %}") 
+                    a(href="{% url 'mgmt:utility_tree' project_name %}")
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans "Utility Tree" %}
                 li
-                    a(href="{% url 'mgmt:quality_requirements' project_name %}") 
+                    a(href="{% url 'mgmt:quality_requirements' project_name %}")
                         i.fa.fa-compass.fa-2x
                         p.lead {% trans "Quality Req" %}
+
                 li
-                    a(href="javascript:switchMenu();") 
+                    a(href="javascript:switchMenu();")
                         i.fa.fa-arrow-circle-o-left.fa-2x
-                        p.lead {% trans "Switch View" %}
+                        p.lead {% trans "View Points" %}
 
 
-    
     script(type="text/javascript")
+        $('#simple-menu').sidr();
         function switchMenu(){
             if($('#editor_menu').hasClass('nav')){
                 var management = $('#management_menu')

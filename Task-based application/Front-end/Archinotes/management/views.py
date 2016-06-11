@@ -4,8 +4,10 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.conf import settings
 
 from forms import *
+import json,random
 import web_service_connection
-import random, json, string
+
+''' helpers '''
 
 class LazyEncoder(json.JSONEncoder):
     '''Encodes django's lazy i18n strings.
@@ -16,26 +18,41 @@ class LazyEncoder(json.JSONEncoder):
             return force_unicode(obj)
         return obj
 
-# Create your views here.
+''' home '''
+
 def home(request):
-    teams = list()
-    teams.append(('owned_by_me','owned by me'))
-    for i in range(random.randint(1, 10)):
-        teams.append((('%s_%s' %('team',i)), ('%s %s' %('team',i))))
-    form = WorkspaceForm(teams=teams)
-    return render(request, 'mgmt_home.jade', {'form':form})
+    if request.method == 'GET':
+        team_response = web_service_connection.list_teams(request=request)
+        if team_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            print '\n\n\n',team_response[settings.RESPONSE_CONTENT],'\n\n\n'
+            teams = list()
+            teams.append(('owned_by_me','owned by me'))
+            for team in team_response[settings.RESPONSE_CONTENT]:
+                teams.append(((team['name'].replace(' ','_')),(team['name'])))
+            form = WorkspaceForm(teams=teams)
+            return render(request, 'mgmt_home.jade', {'form':form})
+        return render(request, 'mgmt_home.jade', {'error':team_response[settings.RESPONSE_MESSAGE]})
 
 def get_projects_team(request):
-    lista = list()
-    for i in range(random.randint(1, 10)):
-        dicts = dict()
-        dicts['project_name']= '%s_%s' %('project',i)
-        dicts['project_description']= '%s_%s' %('description',i)
-        lista.append(dicts)
-    return HttpResponse(json.dumps({'projects':lista}))
+    if request.method == 'GET':
+        projects_response = web_service_connection.get_projects_team(team=request.GET['team'],request=request)
+        if projects_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return HttpResponse(json.dumps({'projects':projects_response[settings.RESPONSE_CONTENT]}))
+        return render(request, 'mgmt_home.jade', {'error':projects_response[settings.RESPONSE_MESSAGE]})
 
-def project(request, name):
-    return render(request, 'mgmt_base.jade', {'project_name':name })
+def new_project(request):
+    if request.method == 'POST':
+        projects_response = web_service_connection.new_project(name=request.POST['project_name'],description=request.POST['project_description'],team=request.POST['team'],request=request)
+        if projects_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'mgmt_home.jade', {'error':projects_response[settings.RESPONSE_MESSAGE]})
+
+def new_team(request):
+    if request.method == 'POST':
+        team_response = web_service_connection.new_team(name=request.POST['team_name'],description=request.POST['team_description'],request=request)
+        if team_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'mgmt_home.jade', {'error':team_response[settings.RESPONSE_MESSAGE]})
 
 def workspace_settings(request):
     return render(request, 'settings.jade', {})
@@ -43,246 +60,225 @@ def workspace_settings(request):
 def workspace_help(request):
     return render(request, 'help.jade', {})
 
+''' overview '''
+
 def overview(request, name):
     if request.method == 'GET' and name:
-        background = "".join( [random.choice(string.letters) for i in xrange(150)] )
-        purpose_scope = "".join( [random.choice(string.letters) for i in xrange(100)] )
-        overview = "".join( [random.choice(string.letters) for i in xrange(300)] )
-        
-        #overview_response = web_service_connection.get_overview(project_name=name, request=request)
-        
-        form = OverviewForm(background=background,purpose_scope=purpose_scope,overview=overview)
-        return render(request, 'overview.jade', {'form':form, 'project_name':name})
+        overview_response = web_service_connection.get_overview(project_name=name, request=request)
+        if overview_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            background = overview_response[settings.RESPONSE_CONTENT]['background']
+            purpose_scope = overview_response[settings.RESPONSE_CONTENT]['purpose_scope']
+            overview = overview_response[settings.RESPONSE_CONTENT]['overview']
+            form = OverviewForm(background=background,purpose_scope=purpose_scope,overview=overview)
+            return render(request, 'overview.jade', {'form':form, 'project_name':name})
+        else:
+            form = OverviewForm()
+            return render(request, 'overview.jade', {'form':form, 'project_name':name, 'error':overview_response[settings.RESPONSE_MESSAGE]})
     elif request.method == 'POST':
         background = request.POST['background']
         purpose_scope = request.POST['purpose_scope']
         overview = request.POST['overview']
-        project_name = request.POST['project_name']
+        project_name = name
+        overview_response = web_service_connection.new_overview(background=background, purpose_scope=purpose_scope, overview=overview, project_name=project_name, request=request)
+        if overview_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            form = OverviewForm(background=background,purpose_scope=purpose_scope,overview=overview)
+            return render(request, 'overview.jade', {'form':form, 'project_name':project_name})
+        else:
+            form = OverviewForm()
+            return render(request, 'overview.jade', {'form':form, 'project_name':name, 'error':overview_response[settings.RESPONSE_MESSAGE]})
 
-        #if background and purpose_scope and overview and project_name
-        #    overview_response = web_service_connection.new_overview(background=background, purpose_scope=purpose_scope, overview=overview, project_name=project_name, request=request)
+''' stakeholders '''
 
-        form = OverviewForm(background=background,purpose_scope=purpose_scope,overview=overview)
-        return render(request, 'overview.jade', {'form':form, 'project_name':project_name})
-
-def stakeholders(request, name):
+def stakeholders(request, name=None):
+    if request.method == 'POST':
+        stakeholder_response = web_service_connection.new_stakeholder(name=request.POST['name'], stakeholder_type=request.POST['stakeholders_types'], project_name=request.POST['project_name'], concerns=request.POST.getlist('concerns'), request=request)
+        if stakeholder_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = StakeholderForm()
+        return render(request, 'stakeholders.jade', {'project_name':request.POST['project_name'], 'error':stakeholder_response[settings.RESPONSE_MESSAGE], 'form':form})
     if request.method == 'GET' and name:
-        #stakeholders_types_response = web_service_connection.get_stakeholders_types(request=request)
-        stakeholders_types = list()
-        stakeholders_types.append((('Architect'), ('Architect')))
-        stakeholders_types.append((('Developer'), ('Developer')))
-        stakeholders_types.append((('Program_Manager'), ('Program Manager')))
+        stakeholders_types_response = web_service_connection.list_stakeholders_types(request=request)
+        if stakeholders_types_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            form = StakeholderForm(stakeholders_types=stakeholders_types_response[settings.RESPONSE_CONTENT])
+        else:
+            form = StakeholderForm()
+        stakeholders_response = web_service_connection.list_stakeholders(project_name=name, request=request)
+        if stakeholders_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return render(request, 'stakeholders.jade', {'project_name':name, 'stakeholders':stakeholders_response[settings.RESPONSE_CONTENT], 'form':form})
+        else:
+            return render(request, 'stakeholders.jade', {'project_name':name, 'error':stakeholders_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-        form = StakeholderForm(stakeholders=stakeholders_types)
+def get_stakeholder(request, name):
+    if request.method == 'GET':
+        stakeholder_response = web_service_connection.get_stakeholder(name=request.GET['name'], project_name=request.GET['project_name'], request=request)
+        return HttpResponse(json.dumps({stakeholder_response[settings.RESPONSE_MESSAGE]:stakeholder_response[settings.RESPONSE_CONTENT]}, cls=LazyEncoder), content_type='application/json')
 
-        #stakeholders_response = web_service_connection.get_stakeholders(project_name=name, request=request)
-        sh = list()
-        sh.append('Architect')
-        sh.append('Developer')
-        sh.append('Program Manager')
+def update_stakeholder(request, name):
+    if request.method == 'POST':
+        stakeholder_response = web_service_connection.update_stakeholder(old_name=request.POST['old_name'], name=request.POST['name'], stakeholder_type=request.POST['stakeholders_types'], project_name=request.POST['project_name'], concerns=request.POST.getlist('concerns'), request=request)
+        if stakeholder_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = StakeholderForm()
+        return render(request, 'stakeholders.jade', {'project_name':request.POST['project_name'], 'error':stakeholder_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-        stakeholders = list()
-        for i in range(random.randint(0, 10)):
-            dicts = dict()
-            dicts['role']= '%s_%s' %('role',i)
-            dicts['type']= sh[random.randint(0, 2)]
-            dicts['concerns']= '%s_%s' %('concerns',i)
-            stakeholders.append(dicts)
-        return render(request, 'stakeholders.jade', {'project_name':name, 'stakeholders':stakeholders, 'form':form})
+def delete_stakeholder(request, name):
+    if request.method == 'POST':
+        stakeholder_response = web_service_connection.delete_stakeholder(name=request.POST['name'], project_name=request.POST['project_name'], request=request)
+        if stakeholder_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = StakeholderForm()
+        return render(request, 'stakeholders.jade', {'project_name':request.POST['project_name'], 'error':stakeholder_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-@csrf_exempt
-def add_stakeholder(request, name):
-    if request.method == 'POST' and name:
-        role = request.POST['role']
-        stakeholder_type = request.POST['stakeholder']
-        concerns = request.POST['concerns']
+''' goals '''
 
-        #if role and stakeholder and overview and concerns
-        #    stakeholder_response = web_service_connection.new_stakeholder(role=role, stakeholder_type=stakeholder_type, concerns=concerns, project_name=project_name, request=request)
-
-        return HttpResponse(json.dumps({'message':'success'}, cls=LazyEncoder), content_type='application/json')
-
-def goals(request, name):
+def goals(request, name=None):
     if request.method == 'GET' and name:
-        business_goals = list()
-        for i in range(random.randint(1, 10)):
-            business_goals.append((('%s_%s' %('business_goal',i)), ('%s %s' %('business goal',i))))
+        error = list()
+        measures_types_response = web_service_connection.list_measures_types(request=request)
+        if measures_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(measures_types_response[settings.RESPONSE_MESSAGE])
+        stakeholders_types_response = web_service_connection.list_stakeholders_types(request=request)
+        if stakeholders_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(stakeholders_types_response[settings.RESPONSE_MESSAGE])
+        quality_atributes_types_response = web_service_connection.list_quality_atributes_types(request=request)
+        if quality_atributes_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(quality_atributes_types_response[settings.RESPONSE_MESSAGE])
+        business_goals_response = web_service_connection.list_business_goals(project_name=name,request=request)
+        if business_goals_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(business_goals_response[settings.RESPONSE_MESSAGE])
 
-        measures = list()
-        measures.append((('measure_1'), ('Measure 1')))
-        measures.append((('measure_2'), ('Measure 2')))
-        measures.append((('measure_3'), ('Measure 3')))
-        measures.append((('measure_4'), ('Measure 4')))
+        if len(error)>0:
+            form = GoalForm()
+            return render(request, 'goals.jade', {'project_name':name, 'error':error, 'form':form})
+        else:
+            form = GoalForm(business_goals=business_goals_response[settings.RESPONSE_CONTENT], measures=measures_types_response[settings.RESPONSE_CONTENT], stakeholders_types=stakeholders_types_response[settings.RESPONSE_CONTENT], quality_atributes_types=quality_atributes_types_response[settings.RESPONSE_CONTENT])
+            return render(request, 'goals.jade', {'form':form,'project_name':name,'business_goals':business_goals_response[settings.RESPONSE_CONTENT]})
 
-        stakeholders_types = list()
-        stakeholders_types.append((('Architect'), ('Architect')))
-        stakeholders_types.append((('Developer'), ('Developer')))
-        stakeholders_types.append((('Program_manager'), ('Program Manager')))
-
-        quality_atributes_types = list()
-        quality_atributes_types.append((('Security'), ('Security')))
-        quality_atributes_types.append((('Availability'), ('Availability')))
-        quality_atributes_types.append((('Modifiability'), ('Modifiability')))
-
-        goal = "".join( [random.choice(string.letters) for i in xrange(70)] )
-        objective = "".join( [random.choice(string.letters) for i in xrange(100)] )
-        driver = driver = "".join( [random.choice(string.letters) for i in xrange(150)] )
-
-        form = GoalForm(business_goals=business_goals, measures=measures, stakeholders_types=stakeholders_types, quality_atributes_types=quality_atributes_types, goal=goal, objective=objective, driver=driver)
-        return render(request, 'goals.jade', {'form':form,'project_name':name,'business_goals':business_goals})
     elif request.method == 'POST':
+        business_goal_response = web_service_connection.new_business_goal(name=request.POST['name'], project_name=request.POST['project_name'], request=request)
+        if business_goal_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = GoalForm()
+        return render(request, 'goals.jade', {'project_name':request.POST['project_name'], 'error':business_goal_response[settings.RESPONSE_MESSAGE], 'form':form})
+
+def delete_business_goal(request,name):
+    if request.method == 'POST':
+        business_goal_response = web_service_connection.delete_business_goal(name=request.POST['name'], project_name=request.POST['project_name'], request=request)
+        if business_goal_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = GoalForm()
+        return render(request, 'goals.jade', {'project_name':request.POST['project_name'], 'error':business_goal_response[settings.RESPONSE_MESSAGE], 'form':form})
+
+def update_business_goal(request,name):
+    if request.method == 'POST':
         project_name = request.POST['project_name']
-        name = request.POST['business_goals']
-        description = request.POST['goal']
+        business_goal_name = request.POST['business_goals']
+        goal_description = request.POST['goal']
         objective = request.POST['objective']
         driver = request.POST['driver']
         stakeholders = request.POST.getlist('stakeholders')
         quality_atributes = request.POST.getlist('quality_atributes')
         measure = request.POST['measures']
+        chart_min = request.POST['chart_min']
+        chart_med = request.POST['chart_med']
+        chart_max = request.POST['chart_max']
+        range_min = request.POST['minimum']
+        range_max = request.POST['maximum']
 
-        print 'project_name:',project_name
-        print 'name:',name
-        print 'description:',description
-        print 'objective:',objective
-        print 'driver:',driver
-        print 'stakeholders:',stakeholders
-        print 'quality_atributes:',quality_atributes
-        print 'measure:',measure
+        business_goal_response = web_service_connection.update_business_goal(name=business_goal_name,goal_description=goal_description,objective=objective,driver=driver,stakeholders=stakeholders,quality_atributes=quality_atributes,measure=measure,project_name=project_name,chart_min=chart_min,chart_med=chart_med,chart_max=chart_max,range_min=range_min,range_max=range_max,request=request)
+        if business_goal_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = GoalForm()
+        return render(request, 'goals.jade', {'project_name':request.POST['project_name'], 'error':business_goal_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-        return redirect('mgmt:goals', project_name)
+def get_business_goal(request,name):
+    if request.method == 'GET':
+        business_goal_response = web_service_connection.get_business_goal(name=request.GET['name'], project_name=name, request=request)
+        return HttpResponse(json.dumps({business_goal_response[settings.RESPONSE_MESSAGE]:business_goal_response[settings.RESPONSE_CONTENT]}, cls=LazyEncoder), content_type='application/json')
 
-def get_business_goal(request, name):
+''' constraints '''
+
+def constraints(request, name=None):
     if request.method == 'GET' and name:
-        business_goal_name = request.GET['name']
-        #TODO conectar con el backend
-        
-        measures = list()
-        measures.append('Measure 1')
-        measures.append('Measure 2')
-        measures.append('Measure 3')
-        measures.append('Measure 4')
+        error = list()
+        constraints_types_response = web_service_connection.list_constraints_types(request=request)
+        if constraints_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(constraints_types_response[settings.RESPONSE_MESSAGE])
+        stakeholders_types_response = web_service_connection.list_stakeholders_types(request=request)
+        if stakeholders_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(stakeholders_types_response[settings.RESPONSE_MESSAGE])
+        constraints_response = web_service_connection.list_constraints(project_name=name,request=request)
+        if constraints_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(constraints_response[settings.RESPONSE_MESSAGE])
 
-        sh = list()
-        sh.append('Architect')
-        sh.append('Developer')
-        sh.append('Program Manager')
+        if len(error)>0:
+            form = ConstraintForm()
+            return render(request, 'constraints.jade', {'project_name':name, 'error':error, 'form':form})
+        else:
+            form = ConstraintForm(stakeholders=stakeholders_types_response[settings.RESPONSE_CONTENT], types=constraints_types_response[settings.RESPONSE_CONTENT])
+            return render(request, 'constraints.jade', {'form':form, 'project_name':name,'constraints':constraints_response[settings.RESPONSE_CONTENT] })
 
-        stakeholders = list()
-        stakeholders.append(sh[random.randint(0, 2)])
-        stakeholders.append(sh[random.randint(0, 2)])
-        
-        qa = list()
-        qa.append('Security')
-        qa.append('Availability')
-        qa.append('Modifiability')
-
-        quality_atributes = list()
-        quality_atributes.append(qa[random.randint(0, 2)])
-        quality_atributes.append(qa[random.randint(0, 2)])
-
-        measure = measures[random.randint(0, 3)]
-
-        goal = "".join( [random.choice(string.letters) for i in xrange(70)] )
-        objective = "".join( [random.choice(string.letters) for i in xrange(100)] )
-        driver = "".join( [random.choice(string.letters) for i in xrange(150)] )
-        
-        mini = random.randint(10, 33)
-        med = random.randint(10, 33)
-        maxi = random.randint(10, 33)
-
-        return HttpResponse(json.dumps({'response':{'goal':goal,'objective':objective,'driver':driver,'stakeholders':stakeholders,'quality_atributes':quality_atributes,'measure':measure,'min':mini,'med':med,'max':maxi}}, cls=LazyEncoder), content_type='application/json')
+    if request.method == 'POST':
+        constraint_response = web_service_connection.new_constraint(name=request.POST['name'], constaint_type=request.POST['types'], stakeholder=request.POST['stakeholders'], description=request.POST['description'], alternatives=request.POST['alternatives'],project_name=request.POST['project_name'], request=request)
+        if constraint_response[settings.RESPONSE_MESSAGE]==settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = ConstraintForm()
+        return render(request, 'constraints.jade', {'project_name':request.POST['project_name'], 'error':constraint_response[settings.RESPONSE_MESSAGE], 'form':form})
 
 
-def constraints(request, name):
-    business = list()
-    for i in range(random.randint(1, 10)):
-        business.append((('%s_%s' %('business',i)), ('%s %s' %('business',i))))
+def delete_constraint(request, name):
+    if request.method == 'POST':
+        constraint_response = web_service_connection.delete_constraint(name=request.POST['name'].replace (" ", "_"), project_name=request.POST['project_name'], request=request)
+        if constraint_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = ConstraintForm()
+        return render(request, 'constraints.jade', {'project_name':request.POST['project_name'], 'error':constraint_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-    test = list()
-    for i in range(random.randint(1, 10)):
-        test.append((('%s_%s' %('technology',i)), ('%s %s' %('technology',i))))
-    
-    stakeholders = list()
-    stakeholders.append((('architect'), ('Architect')))
-    stakeholders.append((('developer'), ('Developer')))
-    stakeholders.append((('program_manager'), ('Program Manager')))
+def update_constraint(request, name):
+    if request.method == 'POST':
+        constraint_response = web_service_connection.update_constraint(old_name=request.POST['old_name'],name=request.POST['name'], constaint_type=request.POST['types'], stakeholder=request.POST['stakeholders'], description=request.POST['description'], alternatives=request.POST['alternatives'],project_name=request.POST['project_name'], request=request)
+        if constraint_response[settings.RESPONSE_MESSAGE]==settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = ConstraintForm()
+        return render(request, 'constraints.jade', {'project_name':request.POST['project_name'], 'error':constraint_response[settings.RESPONSE_MESSAGE], 'form':form})
 
-    types = list()
-    types.append((('technology'), ('Technology')))
-    types.append((('business'), ('Business')))
-
-    sh = list()
-    sh.append('Architect')
-    sh.append('Developer')
-    sh.append('Program Manager')
-
-    constraint = list()
-    constraint.append('Technology')
-    constraint.append('Business')
-
-    constraints = list()
-    for i in range(random.randint(0, 10)):
-        dicts=dict()
-        dicts['constraint']= constraint[random.randint(0, 1)]
-        dicts['name']="".join( [random.choice(string.letters) for i in xrange(8)] )
-        dicts['stakeholder']= sh[random.randint(0, 2)]
-        dicts['description']="".join( [random.choice(string.letters) for i in xrange(15)] )
-        dicts['alternatives']= "".join( [random.choice(string.letters) for i in xrange(10)] )
-        constraints.append(dicts)
-
-    form = ConstraintForm(stakeholders=stakeholders, types=types)
-    return render(request, 'constraints.jade', {'form':form, 'project_name':name,'constraints':constraints })
-
-@csrf_exempt
-def add_constraint(request, name):
-    if request.method == 'POST' and name:
-        constraint_name = request.POST['name']
-        constaint_type = request.POST['constaint_type']
-        stakeholder_type = request.POST['stakeholder_type']
-        description = request.POST['description']
-        alternatives = request.POST['alternatives']
-        print 'constraint_name: ',constraint_name
-        print 'constaint_type: ',constaint_type
-        print 'stakeholder_type: ',stakeholder_type
-        print 'description: ',description
-        print 'alternatives: ',alternatives
-
-    return HttpResponse(json.dumps({'message':'success'}, cls=LazyEncoder), content_type='application/json')
-
-def delete_constraint(request, name, constraint_name):
-    print 'Project Name: ', name
-    print 'Constraint Name: ',  constraint_name
-    return redirect('mgmt:constraints', name)
+''' operations '''
 
 def operations(request, name):
-    if request.method == 'GET':
-        operational_scenarios = list()
-        for i in range(random.randint(1, 10)):
-            operational_scenarios.append((('%s_%s' %('Scenario',i)), ('%s %s' %('Scenario',i))))
+    if request.method == 'GET' and name:
+        error = list()
+        stakeholders_types_response = web_service_connection.list_stakeholders_types(request=request)
+        if stakeholders_types_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(stakeholders_types_response[settings.RESPONSE_MESSAGE])
+        operations_response = web_service_connection.list_operational_scenarios(project_name=name,request=request)
+        if operations_response[settings.RESPONSE_MESSAGE] != settings.SUCCESS_MESSAGE:
+            error.append(operations_response[settings.RESPONSE_MESSAGE])
 
-        inputs = list()
-        for i in range(random.randint(1, 4)):
-            inputs.append((('%s_%s' %('inputs',i)), ('%s %s' %('inputs',i))))
+        if len(error)>0:
+            form = OperationForm()
+            return render(request, 'operations.jade', {'project_name':name, 'error':error, 'form':form})
+        else:
+            form = OperationForm(operational_scenarios=operations_response[settings.RESPONSE_CONTENT], stakeholders=stakeholders_types_response[settings.RESPONSE_CONTENT])
+            return render(request, 'operations.jade', {'form':form, 'project_name':name })
 
-        outputs = list()
-        for i in range(random.randint(1, 4)):
-            outputs.append((('%s_%s' %('outputs',i)), ('%s %s' %('outputs',i))))
-
-        stakeholders = list()
-        stakeholders.append((('Architect'), ('Architect')))
-        stakeholders.append((('Aeveloper'), ('Developer')))
-        stakeholders.append((('Program_Manager'), ('Program Manager')))
-
-        stakeholder_description = "".join( [random.choice(string.letters) for i in xrange(50)] )
-        functionality = "".join( [random.choice(string.letters) for i in xrange(20)] )
-        functionality_description = "".join( [random.choice(string.letters) for i in xrange(150)] )
-        context = "".join( [random.choice(string.letters) for i in xrange(20)] )
-        context_description = "".join( [random.choice(string.letters) for i in xrange(70)] )
-
-        form = OperationForm(operational_scenarios=operational_scenarios, inputs=inputs, outputs=outputs, stakeholders=stakeholders, stakeholder_description=stakeholder_description, functionality=functionality, functionality_description=functionality_description, context=context, context_description=context_description)
-
-        return render(request, 'operations.jade', {'form':form, 'project_name':name })
     elif request.method == 'POST':
+        operations_response = web_service_connection.new_operational_scenario(name=request.POST['name'], project_name=request.POST['project_name'], request=request)
+        if operations_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = OperationForm()
+        return render(request, 'goals.jade', {'project_name':name, 'error':operations_response[settings.RESPONSE_MESSAGE], 'form':form})
+
+def delete_operational_scenario(request,name):
+    if request.method == 'POST':
+        business_goal_response = web_service_connection.delete_operational_scenario(name=request.POST['name'].replace (" ", "_"), project_name=request.POST['project_name'], request=request)
+        if business_goal_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = GoalForm()
+        return render(request, 'goals.jade', {'project_name':request.POST['project_name'], 'error':business_goal_response[settings.RESPONSE_MESSAGE], 'form':form})
+
+def update_operational_scenario(request, name):
+    if request.method == 'POST':
+        scenario_name=request.POST['operational_scenarios']
         stakeholder = request.POST['stakeholders']
         stakeholder_description = request.POST['stakeholder_description']
         context = request.POST['context']
@@ -292,139 +288,108 @@ def operations(request, name):
         functionality = request.POST['functionality']
         functionality_description = request.POST['functionality_description']
 
-        print 'stakeholder: ',stakeholder
-        print 'stakeholder_description: ',stakeholder_description
-        print 'context: ',context
-        print 'context_description: ',context_description
-        print 'inputs: ',inputs
-        print 'outputs: ',outputs
-        print 'functionality: ',functionality
-        print 'functionality_description: ',functionality_description
-
-        return redirect('mgmt:operations', name)
-
+        operations_response = web_service_connection.update_operational_scenario(name=scenario_name,stakeholder=stakeholder, stakeholder_description=stakeholder_description, context=context, context_description=context_description, inputs=inputs, outputs=outputs, functionality=functionality, functionality_description=functionality_description, project_name=name, request=request)
+        if operations_response[settings.RESPONSE_MESSAGE]==settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        form = OperationForm()
+        return render(request, 'operations.jade', {'project_name':name, 'error':operations_response[settings.RESPONSE_MESSAGE], 'form':form})
 
 def get_operational_scenario(request, name):
     if request.method == 'GET':
-        operational_scenario_name = request.GET['name']
-        #TODO conectar con el backend
-        
-        ip = list()
-        ip.append('Input 1')
-        ip.append('Input 2')
-        ip.append('Input 3')
-        ip.append('Input 4')
+        operations_response = web_service_connection.get_operational_scenario(name=request.GET['name'], project_name=name, request=request)
+        return HttpResponse(json.dumps({operations_response[settings.RESPONSE_MESSAGE]:operations_response[settings.RESPONSE_CONTENT]}, cls=LazyEncoder), content_type='application/json')
 
-        op = list()
-        op.append('Output 1')
-        op.append('Output 2')
-        op.append('Output 3')
-        op.append('Output 4')
-
-        sh = list()
-        sh.append('Architect')
-        sh.append('Developer')
-        sh.append('Program Manager')
-
-        stakeholder = sh[random.randint(0, 2)]
-        stakeholder_description = "".join( [random.choice(string.letters) for i in xrange(70)] )
-        context = "".join( [random.choice(string.letters) for i in xrange(10)] )
-        context_description = "".join( [random.choice(string.letters) for i in xrange(50)] )
-        inputs = list()
-        inputs.append(ip[random.randint(0, 2)])
-        inputs.append(ip[random.randint(0, 2)])
-        inputs.append(ip[random.randint(0, 2)])
-        outputs = list()
-        outputs.append(op[random.randint(0, 2)])
-        outputs.append(op[random.randint(0, 2)])
-        outputs.append(op[random.randint(0, 2)])
-        functionality = "".join( [random.choice(string.letters) for i in xrange(10)] )
-        functionality_description = "".join( [random.choice(string.letters) for i in xrange(50)] )
-
-        return HttpResponse(json.dumps({'response':{'stakeholder':stakeholder,'stakeholder_description':stakeholder_description,'context':context,'context_description':context_description,'inputs':inputs,'outputs':outputs,'functionality':functionality,'functionality_description':functionality_description}}, cls=LazyEncoder), content_type='application/json')
+''' utility_tree '''
 
 def utility_tree(request, name):
-    utility_tree_types = list()
-    utility_tree_types.append((('SEI'), ('SEI')))
-    utility_tree_types.append((('ISO'), ('ISO')))
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.new_utility_tree(utility_tree_type=request.POST['utility_tree_type'],project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+    if request.method == 'GET':
+        utility_tree_response = web_service_connection.get_utility_tree(project_name=name, request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE]==settings.SUCCESS_MESSAGE:
+            utility_tree_types = list()
+            utility_tree_types.append((('SEI'), ('SEI')))
+            utility_tree_types.append((('ISO'), ('ISO')))
+            form = UtilityTreeForm(utility_tree_type=utility_tree_types)
+            return render(request, 'utility_tree.jade', {'form':form, 'project_name':name, 'utility_tree':utility_tree_response[settings.RESPONSE_CONTENT] })
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
 
-    utility_tree = list()
-    for i in range(random.randint(2, 15)):
-        dicts = dict()
-        dicts['name']="".join( [random.choice(string.letters) for i in xrange(7)] )
-        nodes = list()
-        for i in range(random.randint(1, 2)):
-            dict_node = dict()
-            dict_node['node']="".join( [random.choice(string.letters) for i in xrange(7)] ) 
-            a = "".join( [random.choice('HML') for i in xrange(1)])
-            b = "".join( [random.choice('HML') for i in xrange(1)])
-            dict_node['score']= a + ' ' + b
-            nodes.append(dict_node)
-        dicts['nodes']=nodes
-        utility_tree.append(dicts)
+def update_node_score_utility_tree(request, name):
+    if request.method == 'POST':
+        qa_node_score =  request.POST['stakeholder_priority'] + ' ' + request.POST['implementation_difficulty']
+        utility_tree_response = web_service_connection.update_utility_tree(update_type='qa_node_score',qa_name=request.POST['qa_name'],qa_old_name=None,qa_node_name=request.POST['qa_node_name'],qa_old_node_name=None,qa_node_old_score=request.POST['qa_node_score'],qa_node_score=qa_node_score,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
 
-    if random.randint(0, 1) == 1:
-        tree = utility_tree
-    else:
-        tree = list()
-    form = UtilityTreeForm(utility_tree_type=utility_tree_types)
-    return render(request, 'utility_tree.jade', {'form':form, 'project_name':name, 'utility_tree':tree })
+def update_node_utility_tree(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.update_utility_tree(update_type='qa_node',qa_name=request.POST['qa_name'],qa_old_name=None,qa_node_name=request.POST['name'],qa_old_node_name=request.POST['qa_node_name'],qa_node_old_score=None,qa_node_score=None,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+def delete_node_utility_tree(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.delete_utility_tree(delete_type='qa_node',qa_name=request.POST['qa_name'],qa_node_name=request.POST['name'],project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+def add_utility_tree(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.update_utility_tree(update_type='add_qa_name',qa_name=request.POST['quality_attribute_name'],qa_old_name=None,qa_node_name=None,qa_old_node_name=None,qa_node_old_score=None,qa_node_score=None,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+def add_utility_tree_node(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.update_utility_tree(update_type='add_qa_node',qa_name=request.POST['old_qa_name'],qa_old_name=None,qa_node_name=request.POST['name_qa'],qa_old_node_name=None,qa_node_old_score=None,qa_node_score=None,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+def update_utility_tree(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.update_utility_tree(update_type='qa_name',qa_name=request.POST['name_qa'],qa_old_name=request.POST['old_qa_name'],qa_node_name=None,qa_old_node_name=None,qa_node_old_score=None,qa_node_score=None,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+def delete_utility_tree(request, name):
+    if request.method == 'POST':
+        utility_tree_response = web_service_connection.delete_utility_tree(delete_type='qa_name',qa_name=request.POST['name_qa'],qa_node_name=None,project_name=name,request=request)
+        if utility_tree_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'utility_tree.jade', {'project_name':name, 'error':utility_tree_response[settings.RESPONSE_MESSAGE]})
+
+''' quality_requirements '''
 
 def quality_requirements(request, name):
-    quality_atributes = list()
-    for i in range(random.randint(2, 5)):
-        dicts = dict()
-        dicts['name']="".join( [random.choice(string.letters) for i in xrange(7)] )
-        a = "".join( [random.choice('HML') for i in xrange(1)])
-        b = "".join( [random.choice('HML') for i in xrange(1)])
-        if a == 'H':
-            dicts['a']='Hight'
-        elif a == 'M':
-            dicts['a']='Medium'
-        else:
-            dicts['a']='Low'
-        if b == 'H':
-            dicts['b']='Hight'
-        elif b == 'M':
-            dicts['b']='Medium'
-        else:
-            dicts['b']='Low'
-        quality_atributes.append(dicts)
-    quality_scenario = list()
-    for i in range(random.randint(2, 5)):
-        dicts = dict()
-        dicts['name']="".join( [random.choice(string.letters) for i in xrange(7)] )
-        a = "".join( [random.choice('HML') for i in xrange(1)])
-        b = "".join( [random.choice('HML') for i in xrange(1)])
-        if a == 'H':
-            dicts['a']='Hight'
-        elif a == 'M':
-            dicts['a']='Medium'
-        else:
-            dicts['a']='Low'
-        if b == 'H':
-            dicts['b']='Hight'
-        elif b == 'M':
-            dicts['b']='Medium'
-        else:
-            dicts['b']='Low'
-        quality_atributes.append(dicts)
-    return render(request, 'quality_requirements.jade', {'project_name':name,'quality_atributes':quality_atributes,'quality_scenario':quality_scenario})
+    if request.method == 'GET':
+        quality_requirements_response = web_service_connection.list_quality_requirements(project_name=name,request=request)
+        if quality_requirements_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return render(request, 'quality_requirements.jade', {'project_name':name,'quality_atributes':quality_requirements_response[settings.RESPONSE_CONTENT]})
+        return render(request, 'quality_requirements.jade', {'project_name':name, 'error':quality_requirements_response[settings.RESPONSE_MESSAGE]})
+
+    elif request.method == 'POST':
+        quality_scenario_response = web_service_connection.new_quality_scenario(quality_atribute=request.POST['quality_atribute'],quality_atribute_node=request.POST['quality_atribute_node'],quality_scenario_name=request.POST['quality_scenario_name'],project_name=name,request=request)
+        if quality_scenario_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'quality_requirements.jade', {'project_name':name, 'error':quality_scenario_response[settings.RESPONSE_MESSAGE]})
+
+@csrf_exempt
+def update_quality_scenarios(request, name):
+    quality_scenario_response = web_service_connection.update_quality_scenario(source=request.POST['source'],stimulus=request.POST['stimulus'],artifact=request.POST['artifact'],enviroment=request.POST['enviroment'],response=request.POST['response'],response_measure=request.POST['response_measure'],quality_scenario_name=request.POST['qs_name'],quality_atribute=request.POST['qa_name'],quality_atribute_node=request.POST['qa_node_name'],project_name=name,request=request)
+    if quality_scenario_response[settings.RESPONSE_MESSAGE] == settings.SUCCESS_MESSAGE:
+        return redirect(request.META.get('HTTP_REFERER'))
+    return render(request, 'quality_requirements.jade', {'project_name':name, 'error':quality_scenario_response[settings.RESPONSE_MESSAGE]})
 
 def get_quality_attribute_scenarios(request, name):
     if request.method == 'GET':
-        #TODO conectar con el backend
-        
-        queality_scenrios = list()
-        for i in range(random.randint(2, 5)):
-            dicts=dict()
-            dicts['name'] = "".join( [random.choice(string.letters) for i in xrange(10)] )
-            dicts['source_of_stimulus'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            dicts['stimulus'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            dicts['artifact'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            dicts['enviroment'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            dicts['response'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            dicts['response_measure'] = "".join( [random.choice(string.letters) for i in xrange(50)] )
-            queality_scenrios.append(dicts)
-
-        return HttpResponse(json.dumps({'queality_scenrios':queality_scenrios}, cls=LazyEncoder), content_type='application/json')
+        quality_scenarios_response = web_service_connection.get_quality_scenarios(quality_atribute=request.GET['quality_atribute'], quality_atribute_node=request.GET['quality_atribute_node'], project_name=name, request=request)
+        return HttpResponse(json.dumps({quality_scenarios_response[settings.RESPONSE_MESSAGE]:quality_scenarios_response[settings.RESPONSE_CONTENT]}, cls=LazyEncoder), content_type='application/json')

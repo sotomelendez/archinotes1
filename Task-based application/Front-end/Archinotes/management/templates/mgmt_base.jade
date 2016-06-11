@@ -34,48 +34,53 @@
                         | {% trans " Sign Out" %}
 - block content
     .row
-        a.btn.btn-primary(id="simple-menu", href="#sidr", style="position:absolute;left:0;margin-left:auto;margin-right:auto;")
+        a.btn.btn-primary.side-menu#simple-menu(href="#sidr")
             i.fa.fa-arrow-right
         .col-md-12#top_menu
             ul#management_menu.nav.nav-pills.nav-justified.harabara
                 li
-                    a.btn.btn-default.overview(href="{% url 'mgmt:overview' project_name %}") 
+                    a.btn.btn-default.overview(id='overview', href="{% url 'mgmt:overview' project_name %}") 
                         i.fa.fa-spinner.fa-2x
                         p.lead {% trans "Overview" %}
                 li
-                    a.btn.btn-default.stakeholders(href="{% url 'mgmt:stakeholders' project_name %}") 
+                    a.btn.btn-default.stakeholders(id='stakeholders',href="{% url 'mgmt:stakeholders' project_name %}", style='padding-left: 12px;') 
                         i.fa.fa-users.fa-2x
                         p.lead {% trans "Stakeholders" %}
                 li
-                    a.btn.btn-default.goals(href="{% url 'mgmt:goals' project_name %}") 
+                    a.btn.btn-default.goals(id='goals',href="{% url 'mgmt:goals' project_name %}") 
                         i.fa.fa-bullseye.fa-2x
-                        p.lead {% trans "Goals" %}
+                        p.lead.title {% trans "Business" %}
+                            br
+                            | {% trans "Goals" %}
                 li
-                    a.btn.btn-default.constraints(href="{% url 'mgmt:constraints' project_name %}") 
+                    a.btn.btn-default.constraints(id='constraints',href="{% url 'mgmt:constraints' project_name %}") 
                         i.fa.fa-ban.fa-2x
                         p.lead {% trans "Constraints" %}
                 li
-                    a.btn.btn-default.operations(href="{% url 'mgmt:operations' project_name %}") 
+                    a.btn.btn-default.operations(id='operations',href="{% url 'mgmt:operations' project_name %}") 
                         i.fa.fa-eye.fa-2x
-                        p.lead {% trans "Operations" %}
+                        p.lead.title {% trans "Operational" %}
+                            br
+                            | {% trans "Scenarios" %}
                 li
-                    a.btn.btn-default.utility_tree(href="{% url 'mgmt:utility_tree' project_name %}") 
+                    a.btn.btn-default.utility_tree(id='utility_tree',href="{% url 'mgmt:utility_tree' project_name %}") 
                         i.fa.fa-sitemap.fa-2x
                         p.lead {% trans "Utility Tree" %}
                 li
-                    a.btn.btn-default.user_stories(href="{% url 'mgmt:quality_requirements' project_name %}") 
+                    a.btn.btn-default.quality_requirements(id='quality_requirements',href="{% url 'mgmt:quality_requirements' project_name %}") 
                         i.fa.fa-compass.fa-2x
                         p.lead {% trans "Quality Req" %}
 
                 li
-                    a.btn.btn-default(href="javascript:switchMenu();") 
+                    a.btn.btn-default.viewpoints(href="javascript:switchMenu();") 
                         i.fa.fa-arrow-circle-o-left.fa-2x
-                        p.lead {% trans "Switch View" %}
+                        p.lead {% trans "Viewpoints" %}
 
     hr
     .row
         -block project_content
         -endblock
+    
     .row
         #sidr.text-center
             ul#editor_menu
@@ -106,43 +111,9 @@
                 li
                     a(href="javascript:switchMenu();") 
                         i.fa.fa-arrow-circle-o-left.fa-2x
-                        p.lead {% trans "Switch View" %}   
+                        p.lead {% trans "Context" %}   
     
-    script(type="text/javascript")
-        function switchMenu(){
-            if($('#management_menu').hasClass('nav')){
-                var editor = $('#editor_menu')
-                editor.addClass($('#management_menu').attr('class'))
-                $('#editor_menu li a').each(function() {
-                    $(this).addClass('btn btn-default');
-                });
-                var management = $('#management_menu')
-                management.prop('class', null)
-                $('#management_menu li a').each(function() {
-                    $(this).prop('class', null);
-                });
-                $('#top_menu').empty()
-                $('#top_menu').append(editor)
-                $('#sidr').empty()
-                $('#sidr').append(management)
-            }
-            else if($('#editor_menu').hasClass('nav')){
-                var management = $('#management_menu')
-                management.addClass($('#editor_menu').attr('class'))
-                $('#management_menu li a').each(function() {
-                    $(this).addClass('btn btn-default');
-                });
-                var editor = $('#editor_menu')
-                editor.prop('class', null)
-                $('#editor_menu li a').each(function() {
-                    $(this).prop('class', null);
-                });
-                $('#top_menu').empty()
-                $('#top_menu').append(management)
-                $('#sidr').empty()
-                $('#sidr').append(editor)
-            }
-        };
+    script(type="text/javascript", src="/static/archinotes/js/mgmt_base.js")
 
         
         

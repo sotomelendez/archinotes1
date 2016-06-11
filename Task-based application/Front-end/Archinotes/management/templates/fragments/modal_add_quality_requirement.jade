@@ -1,0 +1,23 @@
+- load i18n
+
+#modal_add_quality_requirement.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_quality_requirement_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_add_quality_requirement_label.modal-title.harabara {% trans 'New quality scenario' %}
+            .modal-body
+                form.form-horizontal(action="{% url 'mgmt:new_quality_scenario' project_name %}", method="post")
+                    - csrf_token
+                    .form-group
+                        input#id_quality_atribute(type="hidden", name="quality_atribute")
+                        input#id_quality_atribute_node(type="hidden", name="quality_atribute_node")
+                        label.col-md-4.control-label(for="id_quality_scenario_name") * {% trans 'Name' %}:
+                        .col-md-8
+                            input.form-control#id_quality_scenario_name(type="text", name="quality_scenario_name")
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success.new_quality_requirement(type="submit" ) {% trans 'Add' %}
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

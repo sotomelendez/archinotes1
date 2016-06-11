@@ -1,0 +1,22 @@
+- load i18n
+
+#modal_add_operational_scenario.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_operational_scenario_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_add_operational_scenario_label.modal-title.harabara {% trans 'New operational Scenario' %}
+            .modal-body
+                form.form-horizontal#add_operational_form(action="{% url 'mgmt:new_operational_scenario' project_name %}", method="post")
+                    - csrf_token
+                    .form-group
+                        input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                        label.col-md-4.control-label(for="id_name") * {% trans 'Name' %}:
+                        .col-md-8
+                            {{form.name}}
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success#add_opertional_add(type="submit" ) {% trans 'Add' %}
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning.add_operational_cancel(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

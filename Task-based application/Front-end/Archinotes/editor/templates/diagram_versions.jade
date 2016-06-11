@@ -1,0 +1,65 @@
+- extends 'editor_base.jade'
+- load i18n
+
+- block project_content
+    .row
+        h3.harabara.text-center {% trans "Viewpoint Diagrams Versions" %}
+    .panel.panel-default.panel-projects(style='height:500px;')
+        .panel-body
+            script(type='text/javascript', src='/static/toolbar/js/toolbar.js')
+            div#diagrams
+                - if diagrams
+                    - for diag in diagrams
+                        -if diag.name in selected_name
+                            button(id="{{diag.name}}", name="{{diag.name}}", class='btn btn-info',style='margin:10px')
+                                i.fa.fa-sitemap.fa-2x
+                                p {{diag.name}}
+                        - else
+                            form(action="{% url 'editor:show_diagram_versions' project_name %}", style='display:inline-block;', method='post')
+                                input#diagram_name(name='diagram_name',value='{{diag.name}}', style='display:none;')
+                                input#viewpoint(name='viewpoint',value='{{viewpoint}}', style='display:none;')
+                                button(id="{{diag.name}}", name="{{diag.name}}", class='btn btn-default',style='margin:10px')
+                                    i.fa.fa-sitemap.fa-2x
+                                    p {{diag.name}}
+                br
+            div(id='timelinediv')
+                .demo-box-wrap
+                    link(rel='stylesheet', href='/static/toolbar/css/toolbar.css', type='text/css')
+                    .demo-box(style='opacity: 1;')
+                        #my-timeline
+                            .timeline-html-wrap(style='display: none;')
+                                - if diag_versions
+                                    - for version in diag_versions
+                                        .timeline-event
+                                            .timeline-date {{version.date}}
+                                            .timeline-title Version {{version.diagram_version}}
+                                            .timeline-content
+                                                button(id="btn{{version.diagram_version}}", name="{{selected_name}}", class='btn btn-default',style='margin:10px', onclick="edit_diagram('{{version.diagram_version}}');")
+                                                        i.fa.fa-plus
+                                                        {% trans " Edit" %}
+                                                form(id='{{version.diagram_version}}', action="{% url 'editor:new_diagram_version' project_name %}", method='post', style='display:none;')
+
+            div#diagramImage(align='center',style='margin-top:15px;')
+
+    link(rel='stylesheet', href='/static/timeline/css/timelinexml.basic.css', type='text/css')
+
+- block js
+    script(type='text/javascript', src='/static/timeline/js/timelinexml.min.js')
+    script(type="text/javascript")
+        $(document).ready(function() {
+            $('#simple-menu').sidr();
+        });
+        function selectButton(element){
+            $(".btn-info").addClass('btn-default');
+            $(".btn-info").removeClass('btn-info');
+            $("#"+element.id).removeClass('btn-default');
+            $("#"+element.id).addClass('btn-info');
+        }
+        function edit_diagram(form_id){
+            var inputs = "<input id='viewpoint' name='viewpoint' value='{{viewpoint}}' style='display:none;'></input>"
+            + "<input id='diagram_name' name='diagram_name' value='{{selected_name}}' style='display:none;'></input>"
+            + "<input id='diagram_version' name='diagram_version' value=form_id style='display:none;'></input>";
+            document.getElementById(form_id).innerHTML += inputs;
+            document.getElementById(form_id).submit();
+        }
+        script(type='text/javascript', src="/static/jquery-ui/js/jquery-ui-1.10.4.custom.min.js")

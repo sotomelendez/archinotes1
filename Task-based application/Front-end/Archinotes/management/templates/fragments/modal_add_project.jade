@@ -1,0 +1,26 @@
+- load i18n
+
+#modal_add_project.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_project_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h3#modal_add_project_label.modal-title.harabara New project
+            .modal-body
+                form.form-horizontal#add_project_form(action="{% url 'mgmt:new_project' %}", method="post")
+                    - csrf_token
+                    input#id_team(type="hidden", name="team", value="")
+                    .form-group
+                        label.col-md-12(for="id_project_name") * Name:
+                        .col-md-12
+                            input.form-control#id_project_name(name="project_name", type="text")
+                    .form-group
+                        label.col-md-12(for="id_project_description") * Description:
+                        .col-md-12
+                            textarea.form-control#id_project_description(name="project_description", rows="3", style="resize: none;")
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success.add_project(type="submit" ) Add
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="Cancel")

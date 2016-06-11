@@ -1,0 +1,30 @@
+- load i18n
+
+#modal_update_utility_tree.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_update_utility_tree_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_update_utility_tree_label.modal-title.harabara {% trans 'Modify utility tree' %}
+            .modal-body
+                form.form-horizontal#form_update_utility_tree(action="{% url 'mgmt:update_utility_tree' project_name %}", method="post")
+                    - csrf_token
+                    input#id_a_url(type="hidden", value="{% url 'mgmt:add_utility_tree_node' project_name %}")
+                    input#id_u_url(type="hidden", value="{% url 'mgmt:update_utility_tree' project_name %}")
+                    input#id_d_url(type="hidden", value="{% url 'mgmt:delete_utility_tree' project_name %}")
+                    input#id_old_qa_name(type="hidden", name="old_qa_name", value="")
+                    input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                    .form-group    
+                        label.col-md-4.control-label(for="id_name_qa") * {% trans 'Name' %}:
+                        .col-md-8
+                            input.form-control#id_name_qa(type="text", name="name_qa")
+                    .form-group
+                        .col-md-3.harabara.small-padding
+                            button.btn.btn-success.add_utility_tree(type="submit") {% trans 'Add' %}
+                        .col-md-3.harabara.small-padding
+                            button.btn.btn-primary(type="submit" ) {% trans 'Modify' %}
+                        .col-md-3.harabara.small-padding
+                            button.btn.btn-danger.delete_utility_tree(type="submit" ) {% trans 'Delete' %}
+                        .col-md-3.harabara.small-padding
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

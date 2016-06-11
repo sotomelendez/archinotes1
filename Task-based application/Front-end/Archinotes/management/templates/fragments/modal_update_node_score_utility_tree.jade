@@ -1,0 +1,35 @@
+- load i18n
+
+#modal_update_node_score_utility_tree.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_update_node_score_utility_tree_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_update_node_score_utility_tree_label.modal-title.harabara {% trans 'Modify utility tree' %}
+            .modal-body
+                form.form-horizontal(action="{% url 'mgmt:update_node_score_utility_tree' project_name %}", method="post")
+                    - csrf_token
+                    input#id_qa_name(type="hidden", name="qa_name", value="")
+                    input#id_qa_node_name(type="hidden", name="qa_node_name", value="")
+                    input#id_qa_node_score(type="hidden", name="qa_node_score", value="")
+                    input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                    .form-group    
+                        label.col-md-8.control-label(for="id_stakeholder_priority") * {% trans 'Stakeholder priority' %}:
+                        .col-md-4
+                            select.form-control#id_stakeholder_priority(name="stakeholder_priority")
+                                option(value='H') H
+                                option(value='M') M
+                                option(value='L') L
+                    .form-group
+                        label.col-md-8.control-label(for="id_implementation_difficulty") * {% trans 'Implementarion difficulty' %}:
+                        .col-md-4
+                            select.form-control#id_implementation_difficulty(name="implementation_difficulty")
+                                option(value='H') H
+                                option(value='M') M
+                                option(value='L') L
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-primary(type="submit" ) {% trans 'Modify' %}
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")

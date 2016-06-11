@@ -1,0 +1,24 @@
+- load i18n
+
+#modal_delete_stakeholder.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_delete_stakeholder_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h4#modal_delete_stakeholder_label.modal-title.harabara {% trans 'Delete stakeholder' %}
+            .modal-body
+                .row
+                    .col-md-3.text-center
+                        i.fa.fa-trash-o.fa-4x
+                    #text_to_replace.col-md-8.text-center
+                        | {% trans 'Are you sure you want to delete name_to_replace ?' %}
+                .row
+                    .col-md-6.text-right.harabara
+                        form(role="form", method="post", action="{% url 'mgmt:delete_stakeholder' project_name %}")
+                            - csrf_token
+                            input#name(type="hidden", name="name")
+                            input#id_project_name(type="hidden", name="project_name", value="{{project_name}}")
+                            button.btn.btn-success(type="submit" ) {% trans 'Accept' %}
+                    .col-md-6.text-left.harabara
+                        button.btn.btn-warning.delete_stakeholder_cancel(type="button", data-dismiss="modal") {% trans 'Cancel' %}

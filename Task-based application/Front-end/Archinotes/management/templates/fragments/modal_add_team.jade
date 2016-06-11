@@ -1,0 +1,25 @@
+- load i18n
+
+#modal_add_team.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_team_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h3#modal_add_team_label.modal-title.harabara New team
+            .modal-body
+                form.form-horizontal(id="add_team", action="{% url 'mgmt:new_team' %}", method="post")
+                    - csrf_token
+                    .form-group
+                        label.col-md-12(for="id_team_name") * Name:
+                        .col-md-12
+                            input.form-control#id_team_name(name="team_name", type="text")
+                    .form-group
+                        label.col-md-12(for="id_team_description") * Description:
+                        .col-md-12
+                            textarea.form-control#id_team_description(name="team_description", rows="3", style="resize: none;")
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success(type="submit" ) Add
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning(type="reset",data-dismiss="modal", value="Cancel")

@@ -5,8 +5,38 @@
     title.capitalize-first {{ project_name }}
 
 - block navbar
-    button(onclick='back();')
-        p Go back
+    ul.nav.navbar-nav.navbar-left
+        li.active
+            a(href="javascript:goBack();")
+                i.fa.fa-floppy-o
+                | {% trans ' Save and Go Back' %}
+        li.active
+            a(href="javascript:toggleToolbar();")
+                i.fa.fa-arrow-left
+                | {% trans ' Hide/Show Toolbar' %}
+    ul.nav.navbar-nav.navbar-right
+        li.active
+            a(href="{% url 'mgmt:home' %}")
+                i.fa.fa-briefcase
+                | {% trans ' Workspace' %}
+        li.dropdown
+            a(class='dropdown-toggle', data-toggle='dropdown')
+                i.fa.fa-user
+                | {% trans ' User name' %}
+                i.fa.fa-caret-down
+            ul.dropdown-menu
+                li
+                    a(href="{% url 'mgmt:settings' %}")
+                        i.fa.fa-cogs
+                        | {% trans ' Settings' %}
+                li
+                    a(href="{% url 'mgmt:help' %}")
+                        i.fa.fa-question
+                        | {% trans ' Help' %}
+                li
+                    a(href="/")
+                        i.fa.fa-sign-out
+                        | {% trans ' Sign Out' %}
 
     .onoffswitch(style="float:right;margin-top:10px")
         input#myonoffswitch.onoffswitch-checkbox(type="checkbox", name="onoffswitch", onclick='annotation_activate();')
@@ -16,8 +46,10 @@
 
 - block content
     style
-        div.floating-menu {position:fixed;background:#fff4c8;border:1px solid #ffcc00;width:125px;z-index:100;margin-left:-115px;vertical-align:middle;}
-        div.floating-menu a, div.floating-menu h3 {display:inline-block;}
+        .floating-menu {position:fixed;border:1px; width:115px; z-index:100; margin-left:-115px; margin-top:-20px}
+        .floating-menu a, div.floating-menu h4 {display:inline-block;}
+        /*CHANGED*/
+        .annotation-related{background-color:blue}
         .annotation-selected{background-color:red}
         .drop-annotations{margin-left:100px;}
         .hiddden{display:none}
@@ -101,48 +133,280 @@
         #accordion.panel-group
             .panel.panel-default
                 .panel-heading
-                    h4.panel-title
-                        a(data-toggle='collapse', data-parent='#accordion', href='#collapseOne') Context
-                #collapseOne.panel-collapse.collapse.in
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseOne') Context
+                #collapseOne.panel-collapse.collapse
                     .panel-body
-                        form(id='addDesktop')
-                            button(type='submit')
+                        form(id='addServer', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='server', style='display:none;')
+                            input#element_name(name='element_name' value='Server', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='30', height='0')
+                                    img(width='40', height='50', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_server.svg')
+                        form(id='addDesktop', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='desktop', style='display:none;')
+                            input#element_name(name='element_name' value='Desktop', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
                                 svg(width='0', height='0')
-                                    img(width='80', height='40', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_desktop.svg')
-                        form(id='addDatabase')
-                            button(type='submit')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_desktop.svg')
+                        form(id='addTablet', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='tablet', style='display:none;')
+                            input#element_name(name='element_name' value='Tablet', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
                                 svg(width='0', height='0')
-                                    img(width='80', height='40', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_database.svg')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_tablet.svg')
+                        form(id='addPhone', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='phone', style='display:none;')
+                            input#element_name(name='element_name' value='Phone', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_phone.svg')
+                        form(id='addDatabase', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='database', style='display:none;')
+                            input#element_name(name='element_name' value='Database', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_database.svg')
             .panel.panel-default
                 .panel-heading
-                    h4.panel-title
-                        a(data-toggle='collapse', data-parent='#accordion', href='#collapseTwo') Functional
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseTwo') Functional
                 #collapseTwo.panel-collapse.collapse
                     .panel-body
-                        form(id='addComp')
-                            button(type='submit')
+                        form(id='addComp', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='component_orange', style='display:none;')
+                            input#element_name(name='element_name' value='Component', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
                                 svg(width='0', height='0')
-                                    img(width='80', height='40', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_component_orange.svg')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_component_orange.svg')
+                        form(id='addCollaboration', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='collaboration_yellow', style='display:none;')
+                            input#element_name(name='element_name' value='Collaboration', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_component_collaboration_yellow.svg')
             .panel.panel-default
                 .panel-heading
-                    h4.panel-title
-                        a(data-toggle='collapse', data-parent='#accordion', href='#collapseThree') Information
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseThree') Deployment
                 #collapseThree.panel-collapse.collapse
                     .panel-body
-                        form(id='addClass')
-                            button(type='submit')
+                        form(id='addNode', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='node', style='display:none;')
+                            input#element_name(name='element_name' value='Node', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
                                 svg(width='0', height='0')
-                                    img(width='80', height='40', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_class.svg')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_node.svg')
+                        form(id='addNodeBus', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='node_bus', style='display:none;')
+                            input#element_name(name='element_name' value='Bus', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_node_bus.svg')
+                        form(id='addDatabase', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='database', style='display:none;')
+                            input#element_name(name='element_name' value='Database', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_database.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseFour') Information
+                #collapseFour.panel-collapse.collapse
+                    .panel-body
+                        form(id='addClass', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='class', style='display:none;')
+                            input#element_name(name='element_name' value='Class', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_class.svg')
+                        form(id='addPackage', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='package', style='display:none;')
+                            input#element_name(name='element_name' value='Package', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_package.svg')
+                        form(id='addLayer', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='layer', style='display:none;')
+                            input#element_name(name='element_name' value='Layer', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_layer.svg')
+                        form(id='addInterface', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='interface', style='display:none;')
+                            input#element_name(name='element_name' value='Interface', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_interface.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseFive') Concurrency
+                #collapseFive.panel-collapse.collapse
+                    .panel-body
+                        form(id='addStateBegin', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='state_begin', style='display:none;')
+                            input#element_name(name='element_name' value='Begin', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_begin.svg')
+                        form(id='addStateArtifact', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='state_artifact', style='display:none;')
+                            input#element_name(name='element_name' value='Artifact', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_artifact.svg')
+                        form(id='addStateState', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='state_state_yellow', style='display:none;')
+                            input#element_name(name='element_name' value='State', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_state_yellow.svg')
+                        form(id='addStateGateway', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='state_gateway_yellow', style='display:none;')
+                            input#element_name(name='element_name' value='Gateway', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_gateway_yellow.svg')
+                        form(id='addStateFinish', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='state_finish', style='display:none;')
+                            input#element_name(name='element_name' value='Finish', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_state_finish.svg')
+            .panel.panel-default
+                .panel-heading
+                    h4.harabara.panel-title
+                        a(data-toggle='collapse', data-parent='#toolbar', href='#collapseSix') Development
+                #collapseSix.panel-collapse.collapse
+                    .panel-body
+                        form(id='addFlowProcess', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='flow_process', style='display:none;')
+                            input#element_name(name='element_name' value='Process', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_process.svg')
+                        form(id='addFlowExternal', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='flow_external', style='display:none;')
+                            input#element_name(name='element_name' value='External', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_external.svg')
+                        form(id='addFlowDatastore', action="{% url 'editor:add_element' project_name %}", method='post')
+                            input#viewpoint(name='viewpoint' value='{{viewpoint}}', style='display:none;')
+                            input#diagram_name(name='diagram_name' value='{{diagram_name}}', style='display:none;')
+                            input#diagram_version(name='diagram_version' value='{{diagram_version}}', style='display:none;')
+                            input#element_type(name='element_type' value='flow_datastore', style='display:none;')
+                            input#element_name(name='element_name' value='Datastore', style='display:none;')
+                            input#element_html_id(name='element_html_id', class='elem_id', type='text', style='display:none;')
+                            button.btn.btn-default(type='submit')
+                                svg(width='0', height='0')
+                                    img(width='70', height='35', type='image/svg+xml', src='/static/archinotes/img/svg/icon_model_flow_datastore.svg')
+
     #diagramCanvas.panel.panel-default.panel-projects(style='height:600px;')
+        - if elements
+            - for elem in elements
+                span(id='{{elem.element_html_id}}', class='annotation_element', style='display:inline-block;', ondblclick='doubleClick(this.id)', onclick='annotation_select(this)')
+                    div(class='dropdown drop-annotations hiddden')
+                        a(id='dLabel', role='button', data-toggle='dropdown', data-target='#', href='/page.html')
+                            span(class='caret')
+                        ul(class='dropdown-menu annotation-type-container-annotations', role='menu', aria-labelledby='dLabel')
+                    img(style='z-index:-1;', width='125px', height='75px', src='/static/archinotes/img/svg/icon_model_{{elem.element_type}}.svg')
+                    p(style='position:relative; left:40px; bottom:40px;') {{elem.element_name}}
 
     .row
         #col_menu.col_menu(style="position:absolute;right:0;top:75px;margin-left:auto;margin-right:auto;")
             a#col_menu_btn.btn.btn-primary(onclick="showMenu()")
                 i#col_menu_btn_icon.fa.fa-arrow-left
             #col_menu_data.col_menu_data(style='position:absolute;width:150px;right:-150px;')
-                
+
                 a.btn.btn-primary.btn-block(style='margin-bottom:5px;margin-top:5px', onclick='load_annotation_types()', data-toggle='modal', data-target='#myModal') Hacer comentario
-                
+
                 div#accordion.panel-group(style='margin-bottom:5px')
                   div.panel.panel-default
                     div.panel-heading(style="color: rgb(255, 255, 255); background-color: rgb(66, 139, 202); border-color: rgb(53, 126, 189);")
@@ -170,6 +434,9 @@
                     div#collapseAnnotations2.panel-collapse.collapse.in
                         ul#lia_annotation_types_menu(style='margin-right:20px')
 
+    form(id='add_connection_form', method='post', action="{% url 'editor:add_connection' project_name %}")
+        input#source_id(name='source_id', type='text', style='display:none;')
+        input#target_id(name='target_id', type='text', style='display:none;')
 
     #myModal.modal.fade(aria-hidden='true', aria-labelledby='myModalLabel', role='dialog', tabindex='-1')
       .modal-dialog
@@ -188,21 +455,74 @@
                     .annotation-form
               .modal-footer
                 button.btn.btn-default(data-dismiss='modal', type='button') Close
-                input.btn.btn-primary(type='submit', value='Save changes') 
+                input.btn.btn-primary(type='submit', value='Save changes')
 
 
 
 -block js
-    script(type='text/javascript', src="/static/arbor/js/arbor.js")
-    script(type='text/javascript', src="/static/arbor/js/graphics.js")
-    script(type='text/javascript', src="/static/arbor/js/renderer.js")
+    script(type='text/javascript', src="/static/jquery-ui/js/jquery-ui-1.10.4.custom.min.js")
+    script(type='text/javascript', src="/static/archinotes/js/jquery.connections.js")
+    script(type='text/javascript', src="/static/archinotes/js/jquery-timing.min.js")
     script(type="text/javascript")
-        var idd=0;
+        $(document).ready(function() {
+            var prev = document.referrer;
+            if(prev.indexOf("context") != -1)
+            {
+                $('#collapseOne').addClass("in");
+            }
+            else if(prev.indexOf("functional") != -1)
+            {
+                $('#collapseTwo').addClass("in");
+            }
+            else if(prev.indexOf("deployment") != -1)
+            {
+                $('#collapseThree').addClass("in");
+            }
+            else if(prev.indexOf("information") != -1)
+            {
+                $('#collapseFour').addClass("in");
+            }
+            else if(prev.indexOf("concurrency") != -1)
+            {
+                $('#collapseFive').addClass("in");
+            }
+            else if(prev.indexOf("development") != -1)
+            {
+                $('#collapseSix').addClass("in");
+            }
+            -if connections
+                - for conn in connections
+                    $("#"+{{conn.source_element_html_id}}).connections({to: "#"+{{conn.target_element_html_id}} });
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+            $.repeat().add('connection').each($).connections('update').wait(0);
+        });
+    script(type="text/javascript")
+        var idd=($("#diagramCanvas").children().length+1);
         var glob_obj;
         var glob_obj_2;
+
+        $( "#addServer").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='100px' height='125x' src='/static/archinotes/img/svg/icon_model_server.svg' /><p style='position:relative; left:25px; bottom:65px;'>Server"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+
         $( "#addDesktop").submit(function( event ) {
             event.preventDefault();
-            var content = $("<span class='annotation_element' onclick='annotation_select(this)' id="+idd+"  style='display:inline-block;'>"+
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span class='annotation_element' onclick='annotation_select(this)' id='"+compId+"'  style='display:inline-block;'>"+
             "<div class='dropdown drop-annotations hiddden' >"+
               "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
                 "<span class='caret'></span>"+
@@ -215,36 +535,381 @@
             $(content).tooltip();
             $(content).draggable();
             $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addTablet").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='75px' src='/static/archinotes/img/svg/icon_model_tablet.svg' /><p style='position:relative; left:40px; bottom:40px;'>Tablet"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+
+        $( "#addPhone").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='80px' height='125px' src='/static/archinotes/img/svg/icon_model_phone.svg' /><p style='position:relative; left:16px; bottom:80px;'>Phone"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
         });
         $( "#addDatabase").submit(function( event ) {
             event.preventDefault();
-            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_database.svg' /><p style='position:relative; left:40px; bottom:50px;'>Database"+($("#diagramCanvas").children().length+1)+"</p></span>");
-            idd++;
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_database.svg' /><p style='position:relative; left:40px; bottom:50px;'>Database"+compId+"</p></span>");
             $(content).tooltip();
             $(content).draggable();
             $( "#diagramCanvas" ).append($(content));
-        });
-        $( "#addClass").submit(function( event ) {
-            event.preventDefault();
-            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_class.svg' /><p style='position:relative; left:40px; bottom:80px;'>Class"+($("#diagramCanvas").children().length+1)+"</p></span>");
-            idd++;
-            $(content).tooltip();
-            $(content).draggable();
-            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
         });
         $( "#addComp").submit(function( event ) {
             event.preventDefault();
-            var content = $("<span onclick='annotation_select(this)' id="+idd+" style='display:inline-block;'><img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_component_orange.svg' /><p style='position:relative; left:40px; bottom:45px;'>Component"+($("#diagramCanvas").children().length+1)+"</p></span>");
-            idd++;
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' src='/static/archinotes/img/svg/icon_model_component_orange.svg' /><p style='position:relative; left:40px; bottom:45px;'>Component"+compId+"</p></span>");
             $(content).tooltip();
             $(content).draggable();
             $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
         });
-        function back(){
+        $( "#addCollaboration").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_component_collaboration_yellow.svg' /><p style='position:relative; left:15px; bottom:75px;'>Collaboration"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addNode").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_node.svg' /><p style='position:relative; left:15px; bottom:75px;'>Node"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addNodeBus").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='60px' src='/static/archinotes/img/svg/icon_model_node_bus.svg' /><p style='position:relative; left:15px; bottom:40px;'>Bus"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addClass").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_class.svg' /><p style='position:relative; left:40px; bottom:80px;'>Class"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addPackage").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_package.svg' /><p style='position:relative; left:40px; bottom:80px;'>Package"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addLayer").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='node"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='60px' src='/static/archinotes/img/svg/icon_model_layer.svg' /><p style='position:relative; left:15px; bottom:40px;'>Layer"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addInterface").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_interface.svg' /><p style='position:relative; left:15px; bottom:40px;'>Interface"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addStateBegin").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_state_begin.svg' /><p style='position:relative; left:15px; bottom:40px;'>Begin</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addStateArtifact").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_state_artifact.svg' /><p style='position:relative; left:40px; bottom:80px;'>Artifact"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addStateState").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_state_state_yellow.svg' /><p style='position:relative; left:40px; bottom:80px;'>State"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addStateGateway").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='90px' height='125px' src='/static/archinotes/img/svg/icon_model_state_gateway_yellow.svg' /><p style='position:relative; left:15px; bottom:80px;'>Gateway"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addStateFinish").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='75px' height='75px' src='/static/archinotes/img/svg/icon_model_state_finish.svg' /><p style='position:relative; left:15px; bottom:40px;'>Finish</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addFlowProcess").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_flow_process.svg' /><p style='position:relative; left:40px; bottom:80px;'>Process"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addFlowProcess").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='125px' src='/static/archinotes/img/svg/icon_model_flow_process.svg' /><p style='position:relative; left:40px; bottom:80px;'>Process"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addFlowExternal").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span class='annotation_element'  style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='100px' src='/static/archinotes/img/svg/icon_model_flow_external.svg' /><p style='position:relative; left:40px; bottom:60px;'>External"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        $( "#addFlowDatastore").submit(function( event ) {
+            event.preventDefault();
+            var compId = ($("#diagramCanvas").children().length+1);
+            var content = $("<span  class='annotation_element' style='display:inline-block;' onclick='annotation_select(this)' id='"+compId+"' ondblclick='doubleClick(this.id);'>"+
+                    "<div class='dropdown drop-annotations hiddden' >"+
+                      "<a id='dLabel' role='button' data-toggle='dropdown' data-target='#' href='/page.html'>"+
+                        "<span class='caret'></span>"+
+                      "</a>"+
+                      "<ul class='dropdown-menu annotation-type-container-annotations' role='menu' aria-labelledby='dLabel'>"+
+                      "</ul>"+
+                    "</div>"+
+                "<img style='z-index:-1;' width='125px' height='50px' src='/static/archinotes/img/svg/icon_model_flow_datastore.svg' /><p style='position:relative; left:40px; bottom:30px;'>Datastore"+compId+"</p></span>");
+            $(content).tooltip();
+            $(content).draggable();
+            $( "#diagramCanvas" ).append($(content));
+            $('.elem_id').value = ($("#diagramCanvas").children().length+1);
+        });
+        function goBack(){
             window.history.back();
         }
+        function toggleToolbar()
+        {
+            if(document.getElementById("menu").style.visibility=='hidden')
+            {
+                document.getElementById("menu").style.visibility='visible';
+            }
+            else
+            {
+                document.getElementById("menu").style.visibility='hidden';
+            }
+        }
+        function doubleClick(clicked_id)
+        {
+            var nodes = document.getElementsByClassName('connsource');
+            if(nodes.length > 0)
+            {
+                $(nodes[0]).connections({to: "#"+clicked_id});
+                nodes[0].className = "";
+                $('#target_id').value = clicked_id;
+                $('#add_connection_form').submit();
+            }
+            else
+            {
+                document.getElementById(clicked_id).className='connsource';
+                $('#source_id').value = clicked_id;
+            }
+        }
         function annotation_select(item)
-        {        
+        {
             if(col_edit)
             {
                 var noesta=true;
@@ -261,9 +926,9 @@
                     col_elements.push(item.id);
                     $("#"+item.id).addClass('annotation-selected');
                 }
-                
+
             }
-            
+
         }
         function showMenu () {
             if($('#col_menu_data').css('right') === '-150px'){
@@ -279,15 +944,54 @@
         }
         function annotation_activate()
         {
+
+            $('#col_elements_hidden').val(col_elements);
+                $('.modal-annotation-error').html('');
+
+                $.ajax({
+                    url: "{% url 'col:get_all_annotation_types' %}"
+                }).done(function(msg) {
+                    var new_html2 = '';
+                    glob_obj = JSON.parse(msg);
+
+                    $.each(glob_obj, function(i, test) {
+                        var esta=false;
+                        $.each(glob_obj_2, function(index,val){
+
+                            if(val.name_annotation_type === test.name){
+                                var elem_list = val.elements.split(',');
+                                $.each(elem_list, function(kk,element9){
+
+                                    $(".annotation_element").each(function(){
+                                        if($(this).attr('id') == element9)
+                                        {
+                                            esta=true;
+                                        }
+
+                                    });
+                                });
+                            }
+                        });
+                        if(esta === true){
+                            new_html2+='<li><div class="checkbox"><label><input type="checkbox" id="annotation_checkbox_'+test.name+'" onchange="filter_annotations()"> '+test.name+'</label></div></li>';
+                        }
+
+                    });
+                    $('#lista_annotation_types_menu').html(new_html2);
+
+                });
+
             if(col_edit){
                 col_edit=false;
                 $(".annotation-selected").removeClass('annotation-selected');
+                //CHANGE
+                $(".annotation_element").removeClass("annotation-related");
                 col_elements=[];
                 $(".hiddden").hide();
             }
             else
             {
-                
+
                 col_edit=true;
                 $.ajax({
                     url: "{% url 'col:get_all_annotations' %}"
@@ -295,9 +999,9 @@
                     added_list = [];
                     $(".annotation-type-container-annotations").html("");
                     //[{"deleted": false, "name_annotation_type": "Desacuerdo", "_id": {"$oid": "534269d21d41c8179f51c4e1"}, "annotation_data": [{"Titulo": "zzzz"}, {"Razon": "xxxx"}], "elements": "1,0"}]
-                    
+
                     glob_obj_2 = JSON.parse(msg);
-                    
+
                     //recorro todos las anotaciones
                     $.each(glob_obj_2, function(i, test) {
                         ele = test.elements.split(',');
@@ -316,7 +1020,7 @@
                                     {
                                         noesta=false;
                                     }
-                                
+
                                 });
                                 // si no entonces lo agrega y a la lista tambien
                                 if(noesta)
@@ -334,21 +1038,22 @@
                             }
                             //agarro el elemento grafico q contiene la lista
                             respuesta = $("#"+ele_id).find(".annotation-type-container-annotations");
-                            
+
                             respuesta.append(new_html);
                             $("#"+ele_id).find(".hiddden").show();
 
                         });
-                        
-                       
+
+
                     });
-                    
+
                 });
             }
         }
+
         function load_annotation_types()
         {
-            
+
             if(col_elements.length > 0)
             {
                 $('#col_elements_hidden').val(col_elements);
@@ -360,55 +1065,32 @@
                     var new_html = '<option value="-1">Select one...</option>';
                     //alert(msg);
                     glob_obj = JSON.parse(msg);
-                
+
                     $.each(glob_obj, function(i, test) {
                         new_html+='<option value="'+test.name+'">'+test.name+'</option>';
 
                     });
                     $('#modal-annotation-types').html(new_html);
 
-                    
+
                 });
-      
-                
+
+
             }
             else
             {
                 var new_html='<h5 style="color:red">Error: Please select elements to make annotation</h5>';
                 $('.modal-annotation-error').html(new_html);
             }
-            
+
         }
         $(function(){
             annotation_activate();
             annotation_activate();
-            $('#col_elements_hidden').val(col_elements);
-                $('.modal-annotation-error').html('');
 
-                $.ajax({
-                    url: "{% url 'col:get_all_annotation_types' %}"
-                }).done(function(msg) {
-                    var new_html2 = '';
-                    glob_obj = JSON.parse(msg);
-                    
-                    $.each(glob_obj, function(i, test) {
-                        var esta=false;
-                        $.each(glob_obj_2, function(index,val){
-                            if(val.name_annotation_type === test.name){
-                                esta=true;
-                            }
-                        });
-                        if(esta === true){
-                            new_html2+='<li><div class="checkbox"><label><input type="checkbox" id="annotation_checkbox_'+test.name+'" onchange="filter_annotations()" checked> '+test.name+'</label></div></li>';
-                        }
-                        
-                    });
-                    $('#lista_annotation_types_menu').html(new_html2);
-                    
-                });
         });
         $("#modal-annotation-types").change(function() {
-             
+
              var new_html='<br>';
              $( "select option:selected" ).each(function() {
                 var str = $(this).text();
@@ -430,10 +1112,10 @@
                             new_html+='<input type="file" name="val'+j+'" /><br>';
                         }
 
-                  
+
                     });
                   }
-                }); 
+                });
               });
               $('.annotation-form').html(new_html);
           });
@@ -451,7 +1133,8 @@
                 var isChecked = $('#'+value.id).is(':checked');
                 if(isChecked) {
                     var ann_name = value.id.split("_")[2];
-                    var inp = get_annotation_data(ann_name)[0];
+                    //CHANGED
+                    var inp = get_annotation_data(ann_name).annotation_data[0];
                     if(inp !== ""){
                         var prop;
                         for (var name in inp) {
@@ -468,7 +1151,8 @@
             var l = glob_obj_2;
             for(var i = 0; i<l.length; i++){
                 if(l[i].name_annotation_type === ann_name){
-                    return l[i].annotation_data;
+                    //CHANGED
+                    return l[i];
                 }
             }
             return "";
@@ -483,15 +1167,30 @@
             return "";
           }
           function get_annotation_details(ann_name) {
+          //CHANGED esta funcion si cambio toda!
             $('#collapseAnnotations2').html('');
+            $(".annotation_element").removeClass("annotation-related");
             var data = get_annotation_data(ann_name);
             var html = "<ul class='no-padding'>";
-            $.each(data, function(index, value){
+            alert(JSON.stringify(data));
+
+            $.each(data.annotation_data, function(index, value){
                 for (var name in value) {
                   prop = value[name];
                   html += "<li class='accordion_item'>"+prop+"</li><div class='line-separator'></div>";
                 }
             });
+            var el = data.elements.split(",");
+            $.each(el,function(index, elem_id){
+                $(".annotation_element").each(function(){
+                    if($(this).attr('id') == elem_id)
+                    {
+                        $(this).addClass("annotation-related");
+                    }
+                });
+            });
+
+
             html += "</ul>";
             $('#collapseAnnotations2').html(html);
           }

@@ -2,127 +2,63 @@
 - load i18n
 
 - block project_content   
-    #stakeholders_panel.panel.panel-default.panel-projects
-        .panel-body(style='height:500px;')
-            .row
-                h3.harabara.text-center {% trans "Stakeholders " %}
-                    a.btn(data-toggle='modal', data-target='#add_stakeholder_modal')
-                        i.fa.fa-plus.fa-2x
-            .row
-            - if stakeholders
-                #stakeholders
-                    - for stakeholder in stakeholders
-                        a.btn.btn-default.circle.drag(id='draggable-{{stakeholder.role}}', style='margin:10px', data-toggle='popover', title="Concerns", data-content="{{stakeholder.concerns}}")
-                            -if stakeholder.type == 'Architect'
-                                i.fa.fa-puzzle-piece.fa-4x
-                            -elif stakeholder.type == 'Developer'
-                                i.fa.fa-wrench.fa-4x
-                            -else
-                                i.fa.fa-truck.fa-4x
-                            p {{stakeholder.role}}
-            -else
-                p#warning-message.text-center {% trans "The project don't have Stakeholders. Please add one to start" %}
-                #stakeholders
+    #panel.panel.panel-default
+        .panel-body.panel-projects.big-panel
+            -if error
+                .alert.alert-warning.text-center
+                    strong {% trans 'Warning!' %}
+                    |  {% trans 'The information you are looking for cannot be found.' %} {{error}}
+            - else
+                - if not stakeholders
+                    .row
+                        .col-md-10
+                            #stakeholders_panel
+                                p#warning-message.text-center.lead {% trans "The project don't have Stakeholders. Please add one to start" %}
+                        .col-md-2.text-right#options
+                            a.btn(data-toggle="modal", data-target="#modal_add_stakeholder")
+                                i.fa.fa-plus.fa-2x.green
+                - else
+                    .row
+                        .col-md-10
+                            #stakeholders_panel
+                                - for stakeholder in stakeholders
+                                    a.btn.btn-default.circle.drag(id="{{stakeholder.aux}}", onclick="toggleBtn('{{stakeholder.aux}}')")
+                                        -if stakeholder.type == 'Investors'
+                                            i.fa.fa-money.fa-4x
+                                        -elif stakeholder.type == 'Customers and users'
+                                            i.fa.fa-users.fa-4x
+                                        -elif stakeholder.type == 'Employees'
+                                            i.fa.fa-suitcase.fa-4x
+                                        -elif stakeholder.type == 'Regulatory authorities and governments'
+                                            i.fa.fa-eye.fa-4x
+                                        -elif stakeholder.type == 'Partners and alliances'
+                                            i.fa.fa-coffee.fa-4x
+                                        -elif stakeholder.type == 'External entities'
+                                            i.fa.fa-certificate.fa-4x
+                                        -elif stakeholder.type == 'Architects'
+                                            i.fa.fa-cogs.fa-4x
+                                        -elif stakeholder.type == 'Developers and testers'
+                                            i.fa.fa-wrench.fa-4x
+                                        -elif stakeholder.type == 'Supply chain associates'
+                                            i.fa.fa-truck.fa-4x
+                                        p {{stakeholder.name}}
+                        .col-md-2.text-right
+                            input#id_project_name(type="hidden", value="{{project_name}}")
+                            input#id_url_new_value(type="hidden", value="{% url 'mgmt:new_stakeholder' project_name %}")
+                            input#id_url_get_value(type="hidden", value="{% url 'mgmt:get_stakeholder' project_name %}")
+                            input#id_url_update_value(type="hidden", value="{% url 'mgmt:update_stakeholder' project_name %}")
 
-    .modal.fade(id='add_stakeholder_modal', tabindex='-1', role='dialog', aria-labelledby='add_stakeholder_modal_label', aria-hidden='true')
-        .modal-dialog.modal-sm
-            .modal-content
-                .modal-header
-                    button.close(type='button', data-dismiss='modal', aria-hidden='true')
-                        i.fa.fa-times
-                    h3.modal-title.harabara {% trans 'Stakeholder' %}
-                .modal-body
-                    form.form-horizontal#add_stakeholder(action='', method='post')
-                        - csrf_token
-                        .form-group
-                            .col-md-12
-                                h4.harabara {% trans 'Role' %}:
-                                {{form.role}}
-                        .form-group
-                            .col-md-12
-                                h4.harabara {% trans 'Type' %}:
-                                {{form.stakeholders}}
-                        .form-group
-                            .col-md-12
-                                h4.harabara {% trans 'Concerns' %}:
-                                .col-md-9
-                                    {{form.concern_name}}
-                                .col-md-3
-                                    a.btn.btn-success(href='javascript:addConcern();')
-                                        i.fa.fa-plus
-                        .form-group
-                            .col-md-12
-                                {{form.concerns}}
-                        .form-group
-                            .col-md-12.text-center.harabara
-                                input.btn.btn-success(type='submit', value='{% trans "Add" %}') 
-                                input.btn.btn-warning(type='reset',data-dismiss='modal', value='{% trans "Cancel" %}')
+                            a.btn(data-toggle="modal", data-target="#modal_add_stakeholder")
+                                i.fa.fa-plus.fa-2x.green
+                            a.btn(data-toggle="modal", onclick="updateStakeholder()")
+                                i.fa.fa-pencil-square-o.fa-2x.orange
+                            a.btn(data-toggle="modal", onclick="deleteStakeholder()")
+                                i.fa.fa-trash-o.fa-2x.red
+
+    - include 'fragments/modal_add_stakeholder.jade'
+    - include 'fragments/modal_delete_stakeholder.jade'
+
+    #modals
+
 - block js
-    script(type="text/javascript") 
-        $(document).ready(function() {
-            $('#simple-menu').sidr();
-            $( '.drag' ).draggable({containment:'#stakeholders_panel'});
-            $( '.drag' ).popover({placement: 'right'});
-        });
-        function addConcern(){
-            var name = $('#id_concern_name').val();
-            if(name==null||name.length==0){
-                $('#id_concern_name').attr('placeholder', 'Name can´t be blank');
-            }
-            else if(name!=null&&name.length>0){
-                var value = name.replace(/ /g,'_')
-                var content = $("<option value="+value+">"+name+"</option>");                   
-                $('#id_concerns').append($(content));
-                $('#id_concern_name').attr('placeholder', '');
-                $('#id_concern_name').val('');
-            }
-        };
-        $('#add_stakeholder').submit(function( event ) {
-            event.preventDefault();
-            var role = $('#id_role').val();
-            var stakeholder = $('#id_stakeholders').val();
-            var concerns = $('#id_concerns').find('option').map(function() {return this.value;})
-            if(role==null||role.length==0){
-                $('#id_role').attr('placeholder', 'Name can´t be blank');
-            }
-            else if(concerns==null||concerns.length==0){
-                $('#id_concern_name').attr('placeholder', 'Add a concern');
-            }
-            else{
-                temp = [];
-                for(i=0;i<concerns.length;i++){
-                    temp.push(concerns[i]);
-                }
-                var json = JSON.stringify(temp);
-                url_value = "{% url 'mgmt:add_stakeholder' project_name %}";
-                $.ajax({
-                    dataType : 'json',
-                    url : url_value,
-                    type : 'POST',
-                    data : {'role':role,'stakeholder':stakeholder,'concerns':json},
-                    success : function(data) {                   
-                        if(stakeholder=='Architect'){
-                            object = "<i class='fa fa-puzzle-piece fa-4x'></i>";
-                        }
-                        else if(stakeholder=='Developer'){
-                            object = "<i class='fa fa-wrench fa-4x'></i>";
-                        }
-                        else{
-                            object = "<i class='fa fa-truck fa-4x'></i>";
-                        }   
-                        var content = $("<a href='#' id="+role+" data-toggle='popover' title='Concerns' data-content="+json+" class='btn btn-default circle'>"+object+"<p>"+role+"</p></a>");                   
-                        $(content).popover({placement: 'right'});
-                        $(content).draggable({containment:'#stakeholders_panel'});
-                        $('#warning-message').remove();
-                        $( "#stakeholders" ).append($(content));
-                        $('#add_stakeholder_modal').modal('toggle');
-                        $('body').removeClass('modal-open');
-                        $('.modal-backdrop').remove();
-                        $('#id_role').val("");
-                        $('#id_concerns').empty();
-                    },
-                    error: function (data) {
-                    }
-                });
-            }
-        });
+    script(type="text/javascript", src="/static/archinotes/js/stakeholders.js")

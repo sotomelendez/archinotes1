@@ -1,0 +1,40 @@
+- load i18n
+
+#modal_add_constraint.modal.fade(tabindex="-1", role="dialog", aria-labelledby="modal_add_constraint_label", aria-hidden="true")
+    .modal-dialog.modal-sm
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal", aria-hidden="true")
+                    i.fa.fa-times
+                h3#modal_add_constraint_label.modal-title.harabara
+                    | {% trans 'New constraint' %}
+            .modal-body
+                form.form-horizontal#add_constraint_form(action="{% url 'mgmt:new_constraint' project_name %}", method="post")
+                    - csrf_token
+                    .form-group
+                        input#id_project_name(type="hidden", name='project_name', value="{{project_name}}")
+                        input#id_old_name(type="hidden", name="old_name", value="")
+                        label.col-md-4.control-label(for="id_name") * {% trans 'Name' %}:
+                        .col-md-8
+                            {{ form.name }}
+                    .form-group
+                        label.col-md-4.control-label(for="id_types") * {% trans "Type" %}:
+                        .col-md-8
+                            {{ form.types }}
+                    .form-group
+                        label.col-md-12.text-center(for="id_stakeholders") * {% trans "Stakeholder" %}:
+                        .col-md-12
+                            {{ form.stakeholders }}
+                    .form-group
+                        label.col-md-12.text-center(for="id_description") * {% trans "Description" %}:
+                        .col-md-12
+                            {{form.description}}
+                    .form-group
+                        label.col-md-12.text-center(for="id_alternatives") * {% trans "Alternatives" %}:
+                        .col-md-12
+                            {{form.alternatives}}
+                    .form-group
+                        .col-md-6.text-right.harabara
+                            button.btn.btn-success#add_constraint_add(type="submit" ) {% trans 'Add' %}
+                        .col-md-6.text-left.harabara
+                            input.btn.btn-warning.add_constraint_cancel(type="reset",data-dismiss="modal", value="{% trans 'Cancel' %}")
